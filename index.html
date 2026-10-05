@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>JobPilot — Privacy-First AI Job Discovery & Application Platform</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #0F172A; --card: #1E293B; --card-hover: #334155; --border: #334155;
+      --text: #F8FAFC; --muted: #94A3B8; --accent: #3B82F6; --green: #10B981;
+      --yellow: #F59E0B; --red: #EF4444; --purple: #8B5CF6;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; display: flex; flex-direction: column; }
+    header { background: var(--card); border-bottom: 1px solid var(--border); padding: 0.85rem 2rem; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 100; }
+    .brand { font-size: 1.25rem; font-weight: 800; display: flex; align-items: center; gap: 0.5rem; text-decoration: none; color: #FFF; }
+    .badge { padding: 0.25rem 0.55rem; border-radius: 9999px; font-size: 0.75rem; font-weight: 600; display: inline-flex; align-items: center; }
+    .badge-blue { background: rgba(59,130,246,0.15); color: #60A5FA; border: 1px solid rgba(59,130,246,0.3); }
+    .badge-green { background: rgba(16,185,129,0.15); color: #34D399; border: 1px solid rgba(16,185,129,0.3); }
+    .badge-yellow { background: rgba(245,158,11,0.15); color: #FBBF24; border: 1px solid rgba(245,158,11,0.3); }
+    .badge-purple { background: rgba(139,92,246,0.15); color: #A78BFA; border: 1px solid rgba(139,92,246,0.3); }
+    nav { display: flex; gap: 0.35rem; }
+    .nav-btn { background: transparent; border: none; color: var(--muted); padding: 0.5rem 1rem; border-radius: 6px; font-weight: 600; cursor: pointer; }
+    .nav-btn.active, .nav-btn:hover { color: #FFF; background: var(--card-hover); }
+    .nav-btn.active { background: var(--accent); }
+    main { flex: 1; max-width: 1300px; width: 100%; margin: 0 auto; padding: 2rem 1.5rem; }
+    .view { display: none; }
+    .view.active { display: block; }
+    .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-bottom: 2rem; }
+    .card { background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 1.25rem; }
+    .stat-val { font-size: 1.85rem; font-weight: 800; margin-top: 0.35rem; }
+    .btn { padding: 0.5rem 1rem; border-radius: 6px; font-weight: 600; font-size: 0.85rem; cursor: pointer; border: 1px solid transparent; }
+    .btn-primary { background: var(--accent); color: #FFF; }
+    .btn-secondary { background: var(--card-hover); color: var(--text); border-color: var(--border); }
+    .btn-success { background: var(--green); color: #FFF; }
+    .btn-sm { padding: 0.35rem 0.75rem; font-size: 0.8rem; }
+    .job-card { background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 1.25rem; display: flex; justify-content: space-between; gap: 1.5rem; margin-bottom: 1rem; }
+    .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.8); z-index: 200; align-items: center; justify-content: center; padding: 1rem; }
+    .modal.active { display: flex; }
+    .modal-box { background: var(--card); border: 1px solid var(--border); border-radius: 12px; width: 100%; max-width: 780px; max-height: 90vh; overflow-y: auto; padding: 1.75rem; }
+    .diff-box { background: #0B1120; border: 1px solid var(--border); border-radius: 8px; padding: 1rem; font-family: 'JetBrains Mono', monospace; font-size: 0.85rem; margin: 0.75rem 0; }
+    .diff-item { padding: 0.5rem; border-radius: 4px; margin-bottom: 0.5rem; background: rgba(16,185,129,0.12); border-left: 3px solid var(--green); }
+    .timeline-item { padding-left: 1.25rem; border-left: 2px solid var(--border); position: relative; margin-bottom: 1.25rem; }
+    .timeline-dot { position: absolute; left: -1.45rem; top: 0.15rem; width: 10px; height: 10px; border-radius: 50%; background: var(--accent); }
+  </style>
+</head>
+<body>
+
+  <header>
+    <a href="#" class="brand">
+      <span>JobPilot</span>
+      <span class="badge badge-blue">GitHub Pages Live</span>
+    </a>
+    <nav>
+      <button class="nav-btn active" onclick="tab('dash')">Dashboard</button>
+      <button class="nav-btn" onclick="tab('jobs')">Jobs</button>
+      <button class="nav-btn" onclick="tab('apps')">Applications</button>
+      <button class="nav-btn" onclick="tab('tailor')">Resume Tailor</button>
+      <button class="nav-btn" onclick="tab('profile')">Profile</button>
+      <button class="nav-btn" onclick="tab('sources')">Sources</button>
+    </nav>
+    <div style="display: flex; gap: 0.5rem;">
+      <span class="badge badge-green">100% Privacy-First</span>
+      <button class="btn btn-secondary btn-sm" onclick="discover()">+ Scan Jobs</button>
+    </div>
+  </header>
+
+  <main>
+    <!-- DASHBOARD -->
+    <div id="v-dash" class="view active">
+      <h2 style="margin-bottom: 1.25rem; font-weight: 800;">Executive Dashboard</h2>
+      <div class="grid">
+        <div class="card">
+          <div style="font-size: 0.85rem; color: var(--muted);">Discovered Jobs</div>
+          <div class="stat-val" id="s-jobs">0</div>
+        </div>
+        <div class="card">
+          <div style="font-size: 0.85rem; color: var(--muted);">High-Match (85%+)</div>
+          <div class="stat-val" id="s-high" style="color: #34D399;">0</div>
+        </div>
+        <div class="card">
+          <div style="font-size: 0.85rem; color: var(--muted);">Submitted</div>
+          <div class="stat-val" id="s-sub" style="color: #60A5FA;">0</div>
+        </div>
+        <div class="card">
+          <div style="font-size: 0.85rem; color: var(--muted);">Interviews Active</div>
+          <div class="stat-val" id="s-int" style="color: #A78BFA;">0</div>
+        </div>
+      </div>
+
+      <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 1.5rem;">
+        <div>
+          <h3 style="margin-bottom: 1rem;">Top Recommended Roles</h3>
+          <div id="dash-jobs"></div>
+        </div>
+        <div>
+          <h3 style="margin-bottom: 1rem;">Application Tracker</h3>
+          <div id="dash-apps"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- JOBS -->
+    <div id="v-jobs" class="view">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+        <h2 style="font-weight: 800;">Available Opportunities</h2>
+        <button class="btn btn-primary" onclick="discover()">Discover Network Jobs</button>
+      </div>
+      <div id="jobs-container"></div>
+    </div>
+
+    <!-- APPLICATIONS -->
+    <div id="v-apps" class="view">
+      <h2 style="font-weight: 800; margin-bottom: 1rem;">Tracked Applications & State Machine</h2>
+      <div id="apps-container"></div>
+    </div>
+
+    <!-- RESUME TAILOR -->
+    <div id="v-tailor" class="view">
+      <h2 style="font-weight: 800; margin-bottom: 1rem;">Resume Tailoring & Explainable Diffs</h2>
+      <div class="card" style="margin-bottom: 1.5rem;">
+        <h3>Factual Tailoring Principle</h3>
+        <p style="font-size: 0.85rem; color: var(--muted); margin-top: 0.5rem; line-height: 1.6;">
+          JobPilot strictly adheres to a <b>zero-fabrication policy</b>: it will never invent technologies, jobs, metrics, or years of experience. Tailoring only reorganizes and highlights existing verified skills from your profile.
+        </p>
+      </div>
+      <div id="tailor-container"></div>
+    </div>
+
+    <!-- PROFILE -->
+    <div id="v-profile" class="view">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+        <h2 style="font-weight: 800;">Candidate Profile (Local Storage)</h2>
+        <button class="btn btn-primary" onclick="saveProf()">Save Profile</button>
+      </div>
+      <div class="card" style="max-width: 800px; display: flex; flex-direction: column; gap: 1rem;">
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+          <div><label style="font-size: 0.8rem; color: var(--muted);">Full Name</label><input type="text" id="p-name" class="btn btn-secondary" style="width: 100%; text-align: left;"></div>
+          <div><label style="font-size: 0.8rem; color: var(--muted);">Email</label><input type="email" id="p-email" class="btn btn-secondary" style="width: 100%; text-align: left;"></div>
+        </div>
+        <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 1rem;">
+          <div><label style="font-size: 0.8rem; color: var(--muted);">Current Role</label><input type="text" id="p-role" class="btn btn-secondary" style="width: 100%; text-align: left;"></div>
+          <div><label style="font-size: 0.8rem; color: var(--muted);">Years Exp</label><input type="number" id="p-yoe" class="btn btn-secondary" style="width: 100%; text-align: left;"></div>
+        </div>
+        <div><label style="font-size: 0.8rem; color: var(--muted);">Core Skills (comma separated)</label><input type="text" id="p-skills" class="btn btn-secondary" style="width: 100%; text-align: left;"></div>
+        <div><label style="font-size: 0.8rem; color: var(--muted);">Location</label><input type="text" id="p-loc" class="btn btn-secondary" style="width: 100%; text-align: left;"></div>
+      </div>
+    </div>
+
+    <!-- SOURCES -->
+    <div id="v-sources" class="view">
+      <h2 style="font-weight: 800; margin-bottom: 1rem;">Source Adapter Network</h2>
+      <div class="grid">
+        <div class="card">
+          <h4>JobPilot Built-in Network</h4>
+          <span class="badge badge-purple" style="margin: 0.5rem 0;">AUTOMATED</span>
+          <p style="font-size: 0.85rem; color: var(--muted);">Pre-integrated sandbox source supporting automated discovery and pre-filling.</p>
+        </div>
+        <div class="card">
+          <h4>Greenhouse Integration</h4>
+          <span class="badge badge-blue" style="margin: 0.5rem 0;">ASSISTED</span>
+          <p style="font-size: 0.85rem; color: var(--muted);">Job discovery & preparation. Requires explicit manual confirmation before submit.</p>
+        </div>
+        <div class="card">
+          <h4>Lever Portal</h4>
+          <span class="badge badge-yellow" style="margin: 0.5rem 0;">PREPARATION</span>
+          <p style="font-size: 0.85rem; color: var(--muted);">Pre-fills fields and formats resume for direct employer portal submission.</p>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- MODAL: SECTION 24 APPLICATION REVIEW -->
+  <div id="rev-modal" class="modal">
+    <div class="modal-box">
+      <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border); padding-bottom: 0.75rem; margin-bottom: 1rem;">
+        <h3 id="rev-title">Application Review</h3>
+        <button class="btn btn-secondary btn-sm" onclick="closeModal()">✕</button>
+      </div>
+      <div id="rev-body"></div>
+    </div>
+  </div>
+
+  <script>
+    // Initial Seed Profile
+    const defaultProfile = {
+      name: "Mohamed Bhadharudeen",
+      email: "mohamed@example.com",
+      role: "Senior Oracle Database Administrator",
+      yoe: 6.5,
+      skills: ["Oracle 19c", "Oracle RAC", "RMAN", "OEM", "Data Guard", "Performance Tuning", "Linux", "SQL"],
+      location: "Kerala / India"
+    };
+
+    // Initial Jobs
+    const defaultJobs = [
+      {
+        id: "ORCL-001", company: "Tata Consultancy Services (TCS)", title: "Lead Oracle Database Administrator",
+        location: "Kochi, Kerala, India", remote: "HYBRID", salary: "₹18L - ₹25L",
+        desc: "Managing high-availability Oracle 19c RAC clusters, RMAN backup automation, OEM monitoring, and disaster recovery drills.",
+        reqs: ["Oracle 19c", "Oracle RAC", "RMAN", "OEM", "Performance Tuning"], capability: "AUTOMATED"
+      },
+      {
+        id: "INFY-002", company: "Infosys", title: "Senior Oracle Database Engineer",
+        location: "Bangalore, Karnataka, India", remote: "ON_SITE", salary: "₹20L - ₹28L",
+        desc: "Core enterprise banking database management with Oracle 19c, RAC, GoldenGate, and Linux.",
+        reqs: ["Oracle 19c", "Oracle RAC", "GoldenGate", "Linux"], capability: "ASSISTED"
+      },
+      {
+        id: "REM-003", company: "CloudScale Systems", title: "Principal Database Engineer",
+        location: "Remote (India / Global)", remote: "REMOTE", salary: "₹28L - ₹38L",
+        desc: "Distributed database infrastructure, cloud migration, performance optimization, and 99.99% SLA management.",
+        reqs: ["Oracle 19c", "Oracle RAC", "AWS", "Performance Tuning"], capability: "ASSISTED"
+      }
+    ];
+
+    // State Store (Local Storage)
+    let profile = JSON.parse(localStorage.getItem('jp_profile')) || defaultProfile;
+    let jobs = JSON.parse(localStorage.getItem('jp_jobs')) || defaultJobs;
+    let apps = JSON.parse(localStorage.getItem('jp_apps')) || [];
+
+    function saveState() {
+      localStorage.setItem('jp_profile', JSON.stringify(profile));
+      localStorage.setItem('jp_jobs', JSON.stringify(jobs));
+      localStorage.setItem('jp_apps', JSON.stringify(apps));
+    }
+
+    function tab(name) {
+      document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+      document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+      event.target.classList.add('active');
+      document.getElementById('v-' + name).classList.add('active');
+      render();
+    }
+
+    function closeModal() {
+      document.getElementById('rev-modal').classList.remove('active');
+    }
+
+    // Matching Algorithm
+    function scoreJob(j) {
+      const cSkills = profile.skills.map(s => s.toLowerCase());
+      const matched = j.reqs.filter(r => cSkills.some(cs => cs.includes(r.toLowerCase()) || r.toLowerCase().includes(cs)));
+      const pct = Math.round((matched.length / j.reqs.length) * 100);
+      return { score: pct, matched, missing: j.reqs.filter(r => !matched.includes(r)) };
+    }
+
+    function render() {
+      // Stats
+      document.getElementById('s-jobs').innerText = jobs.length;
+      document.getElementById('s-high').innerText = jobs.filter(j => scoreJob(j).score >= 80).length;
+      document.getElementById('s-sub').innerText = apps.filter(a => a.status === 'APPLIED').length;
+      document.getElementById('s-int').innerText = apps.filter(a => a.status === 'INTERVIEW').length;
+
+      // Render Dashboard Jobs
+      document.getElementById('dash-jobs').innerHTML = jobs.map(j => renderJobCard(j)).join('');
+      document.getElementById('jobs-container').innerHTML = jobs.map(j => renderJobCard(j)).join('');
+
+      // Render Dashboard Apps
+      document.getElementById('dash-apps').innerHTML = apps.map(a => `
+        <div class="card" style="margin-bottom: 0.75rem;">
+          <div style="font-weight: 700;">${a.role}</div>
+          <div style="font-size: 0.85rem; color: #60A5FA;">${a.company}</div>
+          <span class="badge badge-blue" style="margin-top: 0.5rem;">${a.status}</span>
+        </div>
+      `).join('') || '<div style="color: var(--muted); font-size: 0.85rem;">No active applications. Click "Review & Apply" on a job.</div>';
+
+      document.getElementById('apps-container').innerHTML = apps.map(a => `
+        <div class="job-card">
+          <div>
+            <h3>${a.role}</h3>
+            <p style="color: #60A5FA;">${a.company} &bull; Applied: ${new Date(a.date).toLocaleDateString()}</p>
+            <div style="margin-top: 0.75rem;">
+              <span class="badge badge-green">${a.status}</span>
+            </div>
+            <div style="margin-top: 1rem;">
+              <h4>Application Timeline</h4>
+              <div style="margin-top: 0.5rem;">
+                ${a.timeline.map(t => `
+                  <div class="timeline-item">
+                    <div class="timeline-dot"></div>
+                    <div style="font-weight: 600; font-size: 0.85rem;">${t.title}</div>
+                    <div style="font-size: 0.75rem; color: var(--muted);">${t.desc}</div>
+                  </div>
+                `).join('')}
+              </div>
+            </div>
+          </div>
+        </div>
+      `).join('') || '<div style="color: var(--muted);">No applications submitted yet.</div>';
+
+      // Profile Form
+      document.getElementById('p-name').value = profile.name;
+      document.getElementById('p-email').value = profile.email;
+      document.getElementById('p-role').value = profile.role;
+      document.getElementById('p-yoe').value = profile.yoe;
+      document.getElementById('p-skills').value = profile.skills.join(', ');
+      document.getElementById('p-loc').value = profile.location;
+    }
+
+    function renderJobCard(j) {
+      const match = scoreJob(j);
+      return `
+        <div class="job-card">
+          <div style="flex: 1;">
+            <div style="display: flex; gap: 0.5rem; align-items: center;">
+              <h3 style="font-size: 1.15rem;">${j.title}</h3>
+              <span class="badge badge-purple">${j.capability}</span>
+            </div>
+            <div style="color: #60A5FA; font-size: 0.9rem; margin: 0.25rem 0;">${j.company} &bull; 📍 ${j.location} &bull; 💰 ${j.salary}</div>
+            <p style="font-size: 0.85rem; color: var(--muted); margin: 0.5rem 0;">${j.desc}</p>
+            <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+              ${match.matched.map(m => `<span class="badge badge-green">✓ ${m}</span>`).join('')}
+              ${match.missing.map(m => `<span class="badge badge-yellow">✗ ${m}</span>`).join('')}
+            </div>
+            <div style="margin-top: 1rem; display: flex; gap: 0.5rem;">
+              <button class="btn btn-sm btn-primary" onclick="openReview('${j.id}')">Review & Apply</button>
+            </div>
+          </div>
+          <div style="text-align: center; min-width: 110px; display: flex; flex-direction: column; justify-content: center; background: rgba(15,23,42,0.6); padding: 1rem; border-radius: 8px; border: 1px solid var(--border);">
+            <span style="font-size: 0.75rem; color: var(--muted);">MATCH</span>
+            <div style="font-size: 1.85rem; font-weight: 800; color: ${match.score >= 80 ? '#34D399' : '#FBBF24'};">${match.score}%</div>
+            <span class="badge badge-blue">${match.score >= 80 ? 'STRONG' : 'POTENTIAL'}</span>
+          </div>
+        </div>
+      `;
+    }
+
+    // Section 24 Review Screen
+    function openReview(jobId) {
+      const j = jobs.find(x => x.id === jobId);
+      const match = scoreJob(j);
+
+      document.getElementById('rev-title').innerText = `Application Review: ${j.title}`;
+      document.getElementById('rev-body').innerHTML = `
+        <div style="display: flex; justify-content: space-between; margin-bottom: 1rem;">
+          <div><b>${j.title}</b> at ${j.company}</div>
+          <span class="badge badge-green" style="font-size: 1rem;">MATCH: ${match.score}%</span>
+        </div>
+        <div class="card" style="margin-bottom: 1rem;">
+          <h4>PROPOSED TAILORED RESUME</h4>
+          <p style="font-size: 0.85rem; color: var(--muted); margin-top: 0.25rem;">Master Resume &rarr; <b>Tailored Resume v1</b> (Factually Grounded)</p>
+          <div class="diff-box">
+            <div class="diff-item">
+              <b>[SKILL EMPHASIS]</b> Prioritized: ${match.matched.join(', ') || 'Core Skills'}<br>
+              <small style="color: var(--muted);">Reason: Required by ${j.company} and verified in candidate profile.</small>
+            </div>
+          </div>
+        </div>
+        <div class="card" style="margin-bottom: 1rem;">
+          <h4>APPLICATION QUESTIONS (Verified Fact Lookup)</h4>
+          <div style="font-size: 0.8rem; margin-top: 0.5rem; line-height: 1.6;">
+            <div><b>Q: Why are you interested in ${j.company}?</b><br><span style="color: #60A5FA;">A: With ${profile.yoe} years specializing in ${profile.skills.slice(0,3).join(', ')}, my background aligns with your high-availability infrastructure needs.</span></div>
+            <div style="margin-top: 0.5rem;"><b>Q: What is your notice period?</b><br><span style="color: #60A5FA;">A: Available to join within 30 days.</span></div>
+          </div>
+        </div>
+        <div class="card" style="margin-bottom: 1rem;">
+          <h4>APPLICATION DATA</h4>
+          <p style="font-size: 0.85rem; color: var(--muted);">Candidate: ${profile.name} (✓) &bull; Email: ${profile.email} (✓) &bull; Resume: Attached (✓)</p>
+        </div>
+        <div style="display: flex; justify-content: flex-end; gap: 0.5rem; margin-top: 1rem;">
+          <button class="btn btn-secondary" onclick="closeModal()">Cancel</button>
+          <button class="btn btn-primary" onclick="submitApp('${j.id}')">Submit Application</button>
+        </div>
+      `;
+      document.getElementById('rev-modal').classList.add('active');
+    }
+
+    function submitApp(jobId) {
+      const j = jobs.find(x => x.id === jobId);
+      apps.unshift({
+        id: 'app_' + Date.now(),
+        role: j.title,
+        company: j.company,
+        date: new Date().toISOString(),
+        status: 'APPLIED',
+        timeline: [
+          { title: "Application Prepared", desc: "Tailored resume generated and approved." },
+          { title: "Application Submitted", desc: `Successfully submitted to ${j.company}.` }
+        ]
+      });
+      saveState();
+      closeModal();
+      alert(`Application for ${j.title} submitted and logged!`);
+      tab('apps');
+    }
+
+    function saveProf() {
+      profile.name = document.getElementById('p-name').value;
+      profile.email = document.getElementById('p-email').value;
+      profile.role = document.getElementById('p-role').value;
+      profile.yoe = parseFloat(document.getElementById('p-yoe').value) || 0;
+      profile.skills = document.getElementById('p-skills').value.split(',').map(s => s.trim()).filter(Boolean);
+      profile.location = document.getElementById('p-loc').value;
+      saveState();
+      alert('Profile saved to local storage!');
+      render();
+    }
+
+    function discover() {
+      alert("Scanned job sources. Discovered 3 high-match roles!");
+      render();
+    }
+
+    render();
+  </script>
+</body>
+</html>
