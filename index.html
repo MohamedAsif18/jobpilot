@@ -35,7 +35,14 @@ const SRC=['LinkedIn','Naukri','Indeed','Foundit','Glassdoor','Google Jobs','Com
 const ST=['SHORTLISTED','DRAFT','APPLIED','UNDER_REVIEW','ASSESSMENT','INTERVIEW','OFFER','REJECTED','WITHDRAWN'];
 let S={p:{name:'Mohamed Bhadharudeen',email:'',phone:'',titles:'Oracle Database Administrator, Database Engineer',skills:'Oracle 19c, Oracle RAC, RMAN, OEM, Data Guard, Performance Tuning, Linux, SQL',yoe:6.5,salary:'',notice:'30 days',auth:'',summary:'',resume:'',resumeName:''},regions:['Kochi','Bangalore','Remote'],modes:['Remote','Hybrid','On-site'],apps:[],skip:[],save:[],ans:{},theme:''};
 try{Object.assign(S,JSON.parse(localStorage.getItem(KEY)||'{}'))}catch(e){}
-const FBCFG=null; // optional: paste your Firebase config object here once, so every device only needs to sign in
+const FBCFG={
+  apiKey: "AIzaSyB33C5sBZ9Gut6_pIjdrv13JRoTwat_woQ",
+  authDomain: "jobpilot-7640c.firebaseapp.com",
+  projectId: "jobpilot-7640c",
+  storageBucket: "jobpilot-7640c.firebasestorage.app",
+  messagingSenderId: "958177093532",
+  appId: "1:958177093532:web:650648dfbe2c58c6c84a59"   
+};// optional: paste your Firebase config object here once, so every device only needs to sign in
 function local(){try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}}
 function save(){S.mod=Date.now();local();snap();if(U)cloudPush()}
 function snap(f){try{let H=JSON.parse(localStorage.getItem(KEY+'_h')||'[]');if(f||!H.length||Date.now()-H[0].t>18e5){H.unshift({t:Date.now(),n:S.apps.length,d:JSON.stringify(S)});localStorage.setItem(KEY+'_h',JSON.stringify(H.slice(0,15)))}}catch(e){}}if(S.theme)document.documentElement.dataset.theme=S.theme;
