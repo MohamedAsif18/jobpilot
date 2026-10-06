@@ -1,0 +1,25 @@
+{
+  "name": "Mohamed Asif",
+  "first_name": "Mohamed",
+  "last_name": "Asif",
+  "email": "mohamed.bhadharudeen@example.com",
+  "phone": "+91 98765 43210",
+  "location": "Kochi, Kerala, India",
+  "linkedin_url": "https://www.linkedin.com/in/mohamed-bhadharudeen",
+  "github_url": "https://github.com/mohamed-bhadharudeen",
+  "current_title": "Senior Oracle Database Administrator",
+  "total_experience_years": 6.5,
+  "notice_period_days": 30,
+  "skills": [
+    "Oracle 11g/12c/19c",
+    "RAC",
+    "Data Guard",
+    "RMAN Backup & Recovery",
+    "Performance Tuning",
+    "AWR / ASH",
+    "OEM 13c",
+    "Exadata",
+    "GoldenGate"
+  ],
+  "summary": "Experienced Oracle Database Administrator with 6.5 years in 24x7 enterprise database infrastructure, Oracle 19c RAC, Data Guard, RMAN backup/recovery, and performance optimization."
+}
