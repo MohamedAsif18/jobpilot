@@ -356,7 +356,8 @@ h4 {
   border-radius: var(--radius-sm);
 }
 
-.btn:disabled {
+.btn[disabled], .btn:disabled {
+  pointer-events: none;
   opacity: 0.45;
   cursor: not-allowed;
 }
@@ -855,6 +856,7 @@ try {
   if (loaded.save) S.save = loaded.save;
   if (loaded.ans) S.ans = loaded.ans;
   if (loaded.theme) S.theme = loaded.theme;
+  if (loaded.demo) S.demo = loaded.demo;
 } catch (e) {
   console.error("Storage load error:", e);
 }
@@ -977,6 +979,9 @@ function genAllJobs() {
     });
   }
 
+  const actNow = [...new Set([...S.regions, ...S.customRegions])];
+  LJ.forEach(j => { if (!seen.has(j.id) && liveVisible(j, actNow)) { seen.add(j.id); out.push(j); } });
+  if (!S.demo) return out;
   if (!T.length) return out;
 
   const allActiveRegions = [...new Set([...S.regions, ...S.customRegions])];
@@ -1065,7 +1070,7 @@ function score(j) {
   const userSkills = list(S.p.skills).map(s => s.toLowerCase());
   const ok = j.reqs.filter(r => userSkills.some(s => s.includes(r.toLowerCase()) || r.toLowerCase().includes(s)));
   const no = j.reqs.filter(r => !ok.includes(r));
-  const skillPct = j.reqs.length ? Math.round((ok.length / j.reqs.length) * 100) : 80;
+  const skillPct = j.reqs.length ? Math.round((ok.length / j.reqs.length) * 100) : 50;
 
   const userYoe = +S.p.yoe || 6.5;
   let expMatch = true;
@@ -1231,7 +1236,7 @@ function dash() {
             <div style="padding:10px 0;border-bottom:1px solid var(--border);">
               <b>${esc(a.title)}</b> at ${esc(a.co)}
               <div style="font-size:12px;color:var(--text-muted);margin:3px 0;">Applied ${Math.round((Date.now() - a.at) / 864e5)} days ago</div>
-              <a class="btn sm" target="_blank" rel="noopener" href="${getLiveJobSearchUrl(a.src, a.title, a.co, a.loc)}">Check Portal ↗</a>
+              <a class="btn sm" target="_blank" rel="noopener" href="${a.url || getLiveJobSearchUrl(a.src, a.title, a.co, a.loc)}">Check Portal ↗</a>
             </div>
           `).join('') : '<p style="color:var(--text-muted);font-size:13px;padding:8px 0;">All caught up! No applications pending follow-up.</p>'}
         </div>
@@ -1262,6 +1267,7 @@ function jobs() {
       </div>
     </div>
 
+    <div id="live-bar"></div>
     <!-- Location & Country Selector -->
     <div class="card">
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
@@ -1375,6 +1381,8 @@ function jobs() {
   `;
 
   renderJobList();
+  renderLiveBar();
+  if (!LIVE.busy && (!LIVE.tried || Date.now() - LIVE.at > 216e5)) refreshLive();
 }
 
 function renderJobList() {
@@ -1413,7 +1421,7 @@ function renderJobList() {
       if (j.maxYoe < 9) return false;
     }
 
-    if (F.minSal > 0 && j.salNumericLpa < F.minSal) {
+    if (F.minSal > 0 && j.salNumericLpa && j.salNumericLpa < F.minSal) {
       return false;
     }
 
@@ -1507,7 +1515,7 @@ function renderJobCard(j) {
           ${m.ok.map(s => `<span class="chip ok">✓ ${esc(s)}</span>`).join('')}
           ${m.no.map(s => `<span class="chip no">! ${esc(s)}</span>`).join('')}
           ${app ? `<span class="chip" style="background:var(--primary);color:#fff;font-weight:700;">📌 ${app.status}</span>` : ''}
-          ${j.isCustom ? `<span class="chip" style="background:var(--warning-subtle);color:var(--warning);font-weight:700;">⭐ Custom Post</span>` : ''}
+          ${j.isLive ? `<span class="chip ok">🟢 Live posting · ${esc(j.src)}</span>` : ''}${j.isCustom ? `<span class="chip" style="background:var(--warning-subtle);color:var(--warning);font-weight:700;">⭐ Custom Post</span>` : ''}
         </div>
 
         <div class="btns" style="margin-top:10px;">
@@ -1516,7 +1524,7 @@ function renderJobCard(j) {
           </button>
           
           <a class="btn" target="_blank" rel="noopener" href="${liveUrl}">
-            ${j.directUrl ? '🔗 Official Job Page ↗' : `🔍 Search on ${j.src} ↗`}
+            ${j.directUrl ? (j.isLive ? '🔗 Open real posting ↗' : '🔗 Official Job Page ↗') : `🔍 Search on ${j.src} ↗`}
           </a>
 
           <button class="btn sm" onclick="toggleSave('${j.id}')">
@@ -1833,6 +1841,7 @@ function openTailorModal(id) {
     `).join('')}
 
     <div class="card" style="margin-top:18px;background:var(--surface-alt);">
+      <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:10px;font-size:12.5px;"><span id="hp-st" class="chip">Helper: checking…</span><select id="ap-mode" style="width:auto"><option value="review">Fill form, I review & submit</option><option value="auto">Fill & auto-submit (safe forms only)</option></select></div><div id="ap-status"></div>
       <label style="display:flex;align-items:center;gap:10px;cursor:pointer;font-size:13.5px;color:var(--text);">
         <input type="checkbox" id="approve-chk" style="width:auto;" onchange="toggleApplyButtons(this.checked)">
         <span>I have reviewed the tailored resume and answers for <b>${esc(j.co)}</b>.</span>
@@ -1845,7 +1854,8 @@ function openTailorModal(id) {
       <div class="btns" style="justify-content:flex-end;">
         <button class="btn" onclick="cm()">Cancel</button>
         <button class="btn" onclick="recordApplication('${j.id}', 'DRAFT')">💾 Save Draft</button>
-        <a class="btn p" id="btn-open-portal" target="_blank" rel="noopener" href="${liveApplyUrl}" disabled>
+        <button class="btn p" id="btn-auto" disabled data-url="${j.directUrl ? 1 : ''}" onclick="autoApply('${j.id}')">🚀 Auto-apply with Helper</button>
+        <a class="btn" id="btn-open-portal" target="_blank" rel="noopener" href="${liveApplyUrl}" disabled>
           ↗ Open Application Page
         </a>
         <button class="btn g" id="btn-mark-applied" disabled onclick="recordApplication('${j.id}', 'APPLIED')">
@@ -1857,6 +1867,7 @@ function openTailorModal(id) {
 
   updateResumeStats();
   $('#m').classList.add('on');
+  pingHelper();
 }
 
 function updateResumeStats() {
@@ -1873,6 +1884,7 @@ function toggleApplyButtons(checked) {
   const b2 = $('#btn-mark-applied');
   if (b1) b1.disabled = !checked;
   if (b2) b2.disabled = !checked;
+  const b3 = $('#btn-auto'); if (b3) { b3.dataset.ok = checked ? 1 : ''; syncAuto(); }
 }
 
 function resetToMasterResume(jobId) {
@@ -1959,6 +1971,7 @@ function recordApplication(jobId, status) {
       title: j.title,
       src: j.src,
       loc: j.loc,
+      url: j.directUrl || '',
       status: status,
       resume: editedResume,
       notes: '',
@@ -2027,7 +2040,7 @@ function apps() {
 
         <div class="btns" style="margin:12px 0;">
           <button class="btn sm p" onclick="viewApplicationResume('${a.id}')">📄 View / Edit Tailored Resume</button>
-          <a class="btn sm" target="_blank" rel="noopener" href="${getLiveJobSearchUrl(a.src, a.title, a.co, a.loc)}">Check Portal ↗</a>
+          <a class="btn sm" target="_blank" rel="noopener" href="${a.url || getLiveJobSearchUrl(a.src, a.title, a.co, a.loc)}">Check Portal ↗</a>
           <button class="btn sm d" onclick="deleteApplication('${a.id}')">Delete Record</button>
         </div>
 
@@ -2296,6 +2309,7 @@ function set() {
       </div>
     </div>
 
+    ${renderLiveSettings()}
     ${renderCloudSyncCard()}
 
     <div class="card">
@@ -2549,6 +2563,117 @@ function renderCloudSyncCard() {
       </div>
     </div>
   `;
+}
+
+
+// ---------------- REAL LIVE JOBS ----------------
+var LJ = [], LIVE = { st: {}, at: 0, sig: '', busy: false, tried: false };
+try { const c = JSON.parse(localStorage.getItem('jp_live') || 'null'); if (c) { LJ = c.jobs || []; LIVE.at = c.at || 0; LIVE.sig = c.sig || ''; LIVE.st = c.st || {}; } } catch (x) {}
+const KEYS = () => { try { return JSON.parse(localStorage.getItem('jp_keys') || '{}'); } catch (x) { return {}; } };
+const sigNow = () => list(S.p.titles).join() + '|' + [...S.regions, ...S.customRegions].join() + '|' + JSON.stringify(KEYS()).length;
+const strip = t => String(t || '').replace(/<[^>]*>/g, ' ').replace(/&nbsp;|&amp;|&#?\w+;/g, ' ').replace(/\s+/g, ' ').trim();
+const KW = ['Oracle','PostgreSQL','MySQL','SQL Server','MongoDB','AWS','Azure','GCP','OCI','Kubernetes','Docker','Terraform','Ansible','Python','Java','Linux','SQL','PL/SQL','RMAN','Data Guard','RAC','GoldenGate','Exadata','Performance Tuning','DevOps','CI/CD','Kafka','Snowflake','Shell scripting'];
+const has = (t, k) => new RegExp('(^|[^a-z0-9])' + k.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '([^a-z0-9]|$)', 'i').test(t);
+const ADZ = {Kochi:'in',Thiruvananthapuram:'in',Bangalore:'in',Chennai:'in',Hyderabad:'in',Pune:'in',Mumbai:'in','Delhi NCR':'in',Kolkata:'in',Coimbatore:'in',London:'gb','New York':'us','San Francisco':'us',Austin:'us',Dallas:'us',Seattle:'us',Chicago:'us',Toronto:'ca',Vancouver:'ca',Sydney:'au',Melbourne:'au',Singapore:'sg',Berlin:'de',Munich:'de',Frankfurt:'de',Amsterdam:'nl',Paris:'fr',Warsaw:'pl',Auckland:'nz'};
+function liveVisible(j, act) {
+  const l = (j.loc || '').toLowerCase();
+  return act.some(r => j.q === r || l.includes(r.replace(/\(.*\)/, '').trim().toLowerCase())) || (j.mode === 'Remote' && act.some(r => /remote/i.test(r)));
+}
+function norm(o) {
+  const d = strip(o.desc), low = o.title + ' ' + d;
+  const sk = [...new Set([...list(S.p.skills), ...KW])].filter(k => has(low, k)).slice(0, 10);
+  const m = d.match(/(\d{1,2})\s*\+?\s*(?:-|–|to)?\s*(\d{1,2})?\s*\+?\s*(?:years|yrs)/i);
+  const mn = m ? +m[1] : 0, mx = m ? (+m[2] || mn + 3) : 25;
+  return { id: 'lv_' + h(o.url), isLive: true, co: o.co || 'Company', title: strip(o.title), loc: o.loc || 'Remote',
+    mode: o.remote ? 'Remote' : (/hybrid/i.test(low) ? 'Hybrid' : 'On-site'), minYoe: mn, maxYoe: mx,
+    salText: o.sal || 'Not disclosed', salNumericLpa: o.lpa || 0, src: o.src,
+    d: Math.max(0, Math.floor((Date.now() - new Date(o.date || Date.now())) / 864e5)), reqs: sk,
+    desc: d.slice(0, 420) + (d.length > 420 ? '…' : ''), directUrl: o.url };
+}
+async function jf(u, opt) {
+  const c = new AbortController(), t = setTimeout(() => c.abort(), 15000);
+  try { const r = await fetch(u, { ...opt, signal: c.signal }); if (!r.ok) throw new Error('HTTP ' + r.status); return await r.json(); } finally { clearTimeout(t); }
+}
+async function fetchLive() {
+  const T = list(S.p.titles).slice(0, 3), K = KEYS(), regs = [...new Set([...S.regions, ...S.customRegions])], out = [], st = {};
+  const run = async (name, fn) => { try { const a = await fn(); out.push(...a); st[name] = a.length; } catch (x) { st[name] = 'failed (' + (x.message || 'blocked') + ')'; } };
+  await Promise.all([
+    run('Remotive', async () => (await Promise.all(T.map(t => jf('https://remotive.com/api/remote-jobs?search=' + e(t))))).flatMap(r => (r.jobs || []).map(j => ({ ...norm({ url: j.url, title: j.title, co: j.company_name, loc: 'Remote — ' + (j.candidate_required_location || 'Worldwide'), desc: j.description, src: 'Remotive', date: j.publication_date, remote: 1, sal: j.salary }), q: 'Remote' })))),
+    run('Arbeitnow', async () => {
+      const r = await jf('https://www.arbeitnow.com/api/job-board-api'), q = T.join(' ').toLowerCase().split(/\W+/).filter(w => w.length > 3);
+      return (r.data || []).filter(j => q.some(w => (j.title + ' ' + (j.tags || []).join(' ')).toLowerCase().includes(w))).map(j => ({ ...norm({ url: j.url, title: j.title, co: j.company_name, loc: j.location, desc: j.description, src: 'Arbeitnow', date: j.created_at * 1000, remote: j.remote }), q: j.remote ? 'Remote' : '' }));
+    }),
+    K.adz_id && run('Adzuna', async () => {
+      const jobs = [];
+      await Promise.all(T.flatMap(t => regs.filter(r => ADZ[r]).slice(0, 6).map(async r => {
+        const d = await jf(`https://api.adzuna.com/v1/api/jobs/${ADZ[r]}/search/1?app_id=${K.adz_id}&app_key=${K.adz_key}&results_per_page=15&max_days_old=30&sort_by=date&what=${e(t)}&where=${e(r)}`).catch(() => ({}));
+        (d.results || []).forEach(j => jobs.push({ ...norm({ url: j.redirect_url, title: j.title, co: j.company && j.company.display_name, loc: j.location && j.location.display_name, desc: j.description, src: 'Adzuna', date: j.created, sal: j.salary_min ? Math.round(j.salary_min).toLocaleString() + '–' + Math.round(j.salary_max || j.salary_min).toLocaleString() : '', lpa: ADZ[r] === 'in' && j.salary_min ? Math.round(j.salary_min / 1e5) : 0 }), q: r }));
+      })));
+      return jobs;
+    }),
+    K.jsearch && run('JSearch', async () => {
+      const jobs = [];
+      await Promise.all(regs.slice(0, 5).map(async r => {
+        const d = await jf(`https://jsearch.p.rapidapi.com/search?page=1&num_pages=1&query=${e(T[0] + (/remote/i.test(r) ? ' remote' : ' in ' + r))}`, { headers: { 'X-RapidAPI-Key': K.jsearch, 'X-RapidAPI-Host': 'jsearch.p.rapidapi.com' } }).catch(() => ({}));
+        (d.data || []).forEach(j => jobs.push({ ...norm({ url: j.job_apply_link, title: j.job_title, co: j.employer_name, loc: [j.job_city, j.job_country].filter(Boolean).join(', '), desc: j.job_description, src: 'JSearch', date: j.job_posted_at_datetime_utc, remote: j.job_is_remote, sal: j.job_min_salary ? `${j.job_salary_currency || ''} ${j.job_min_salary}–${j.job_max_salary || ''}` : '' }), q: r }));
+      }));
+      return jobs;
+    })
+  ]);
+  const seen = new Set(), list2 = out.filter(j => j.directUrl && !seen.has((j.co + j.title + j.loc).toLowerCase()) && seen.add((j.co + j.title + j.loc).toLowerCase()));
+  if (list2.length) LJ = list2;
+  LIVE.st = st; LIVE.at = Date.now(); LIVE.sig = sigNow();
+  try { localStorage.setItem('jp_live', JSON.stringify({ jobs: LJ, at: LIVE.at, sig: LIVE.sig, st })); } catch (x) {}
+}
+async function refreshLive() {
+  if (LIVE.busy) return;
+  LIVE.busy = LIVE.tried = true; renderLiveBar();
+  try { await fetchLive(); } catch (x) {}
+  LIVE.busy = false;
+  if (pg === 'jobs') { renderLiveBar(); renderJobList(); }
+  toast(LJ.length + ' real postings loaded');
+}
+function renderLiveBar() {
+  const el = $('#live-bar'); if (!el) return;
+  const K = KEYS(), stale = LIVE.sig && LIVE.sig !== sigNow();
+  el.innerHTML = `<div class="banner ${LJ.length ? 'info' : 'warning'}"><div><b>${LIVE.busy ? '⏳ Fetching real postings…' : LJ.length + ' real, live postings (each opens the actual job page)'}</b><br><span style="opacity:.85">${Object.entries(LIVE.st).map(([k, v]) => k + ': ' + v).join(' · ')}${LIVE.at ? ' · updated ' + new Date(LIVE.at).toLocaleTimeString() : ''}</span>${stale && !LIVE.busy ? '<br>Titles/regions changed since last fetch — press refresh.' : ''}${!K.adz_id && !K.jsearch ? '<br>For India/Gulf on-site jobs add a free Adzuna or JSearch key in Settings. Without keys you only get remote/Europe jobs.' : ''}</div><button class="btn sm p" onclick="refreshLive()">🔄 Refresh live jobs</button></div>`;
+}
+function saveKeys() {
+  try { localStorage.setItem('jp_keys', JSON.stringify({ adz_id: $('#k1').value.trim(), adz_key: $('#k2').value.trim(), jsearch: $('#k3').value.trim() })); } catch (x) {}
+  toast('Keys saved'); refreshLive();
+}
+function renderLiveSettings() {
+  const K = KEYS(), v = x => esc(K[x] || '');
+  return `<div class="card"><h3>🌐 Real job sources</h3><p style="font-size:13px;color:var(--text-muted);margin-bottom:10px">Free without keys: Remotive + Arbeitnow (remote / Europe). For India, Gulf and on-site roles add a free key: <b>Adzuna</b> (developer.adzuna.com) and/or <b>JSearch</b> on RapidAPI (covers LinkedIn / Indeed / Google Jobs). Keys stay in this browser only (not synced).</p>
+  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px;margin-bottom:10px"><div><label>Adzuna app_id</label><input id="k1" value="${v('adz_id')}"></div><div><label>Adzuna app_key</label><input id="k2" value="${v('adz_key')}"></div><div><label>JSearch RapidAPI key</label><input id="k3" value="${v('jsearch')}"></div></div>
+  <div class="btns"><button class="btn p" onclick="saveKeys()">Save keys & refresh</button><label style="display:flex;gap:6px;align-items:center;margin:0;color:var(--text)"><input type="checkbox" style="width:auto" ${S.demo ? 'checked' : ''} onchange="S.demo=this.checked;save()"> Also show fake sample jobs (demo only)</label></div></div>
+  <div class="card"><h3>🚀 Auto-apply helper (desktop)</h3><p style="font-size:13px;color:var(--text-muted)">A web page cannot submit forms on other websites, so a small local program does it. In a terminal: <code>pip install playwright</code> → <code>playwright install chromium</code> → <code>python helper.py</code>. Keep it running, then use “Auto-apply” on any real job. It fills the form, uploads a PDF of your approved resume, and stops for CAPTCHA, login or missing fields.</p></div>`;
+}
+// ---------------- AUTO-APPLY (local helper) ----------------
+const HELPER = 'http://localhost:8765'; var HP = false;
+async function pingHelper() {
+  try { const c = new AbortController(); setTimeout(() => c.abort(), 1500); HP = (await fetch(HELPER + '/health', { signal: c.signal })).ok; } catch (x) { HP = false; }
+  const el = $('#hp-st'); if (el) { el.className = 'chip ' + (HP ? 'ok' : 'no'); el.textContent = HP ? '● Helper connected' : '○ Helper offline — see Settings'; }
+  syncAuto();
+}
+function syncAuto() { const b = $('#btn-auto'); if (b) b.disabled = !(b.dataset.ok && HP && b.dataset.url); }
+async function autoApply(id) {
+  const j = genAllJobs().find(x => x.id === id); if (!j || !j.directUrl) return;
+  const p = S.p, qs = generateInterviewQuestions(j), box = $('#ap-status');
+  if (!p.email || !p.phone) { toast('Add email and phone in Profile first'); return; }
+  const d = { url: j.directUrl, mode: $('#ap-mode').value, resume: $('#res-editor').value, name: p.name, email: p.email, phone: p.phone, yoe: p.yoe, salary: p.salary, notice: p.notice, location: S.regions[0] || '', why: qs[0].val };
+  box.innerHTML = '<div class="banner info">Starting helper…</div>';
+  try { const r = await (await fetch(HELPER + '/apply', { method: 'POST', body: JSON.stringify(d) })).json(); pollApply(r.id, j.id); }
+  catch (x) { box.innerHTML = '<div class="banner warning">Helper not reachable.</div>'; }
+}
+async function pollApply(id, jid) {
+  const box = $('#ap-status');
+  try {
+    const s = await (await fetch(HELPER + '/status?id=' + id)).json();
+    if (box) box.innerHTML = `<div class="banner ${s.state === 'error' || s.state === 'needs_you' ? 'warning' : 'info'}">${esc(s.msg)}</div>`;
+    if (s.state === 'submitted') { recordApplication(jid, 'APPLIED'); return; }
+    if (s.state !== 'error' && s.state !== 'done') setTimeout(() => pollApply(id, jid), 3000);
+  } catch (x) { if (box) box.innerHTML = '<div class="banner warning">Lost contact with helper.</div>'; }
 }
 
 if (fbCfgGet()) fbInit().catch(() => {});
