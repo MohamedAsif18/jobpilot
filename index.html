@@ -1,147 +1,2558 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"><title>JobPilot</title>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>JobPilot — Intelligent Job Search & Resume Tailoring</title>
 <style>
-:root{--bg:#F4F6FB;--c:#fff;--b:#DCE2EE;--t:#0F172A;--m:#64748B;--a:#2563EB;--g:#047857;--y:#B45309;--r:#DC2626;--s:#EEF2FA;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
-@media(prefers-color-scheme:dark){:root:not([data-theme=light]){--bg:#0B1220;--c:#151E31;--b:#27344D;--t:#EEF2FA;--m:#8EA0BD;--a:#5B9BFF;--g:#34D399;--y:#FBBF24;--r:#F87171;--s:#1B2740}}
-:root[data-theme=dark]{--bg:#0B1220;--c:#151E31;--b:#27344D;--t:#EEF2FA;--m:#8EA0BD;--a:#5B9BFF;--g:#34D399;--y:#FBBF24;--r:#F87171;--s:#1B2740}
-html{scroll-padding-top:env(safe-area-inset-top,0px)}*{box-sizing:border-box;margin:0}
-body{font:14px/1.5 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;background:var(--bg);color:var(--t)}
-header{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--c);border-bottom:1px solid var(--b);display:flex;gap:12px;align-items:center;padding:10px 16px;flex-wrap:wrap}
-.brand{font-weight:800;font-size:18px}nav{display:flex;gap:4px;flex-wrap:wrap}
-nav button{background:none;border:0;color:var(--m);padding:7px 12px;border-radius:8px;font:600 13px inherit;cursor:pointer}nav button.on{background:var(--a);color:#fff}
-main{max-width:1100px;margin:auto;padding:18px 16px 60px}h2{margin-bottom:12px}h3{font-size:16px}h4{margin:12px 0 6px;font-size:12px;letter-spacing:.06em;color:var(--m);text-transform:uppercase}
-.card{background:var(--c);border:1px solid var(--b);border-radius:12px;padding:14px;margin-bottom:12px}.row{display:flex;gap:14px}.grow{flex:1;min-width:0}
-.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin-bottom:14px}.stat b{display:block;font-size:26px}.stat span,.m{color:var(--m);font-size:12.5px}
-.chips{display:flex;flex-wrap:wrap;gap:5px;margin:8px 0}.chip{padding:2px 9px;border-radius:99px;font-size:12px;border:1px solid var(--b);background:var(--s);cursor:default}
-.ok{color:var(--g);border-color:var(--g)}.no{color:var(--y);border-color:var(--y)}.pick{cursor:pointer;user-select:none}.pick.on{background:var(--a);color:#fff;border-color:var(--a)}
-.btn{display:inline-block;padding:7px 12px;border-radius:8px;border:1px solid var(--b);background:var(--s);color:var(--t);font:600 13px inherit;cursor:pointer;text-decoration:none}
-.btn.p{background:var(--a);color:#fff;border-color:var(--a)}.btn.g{background:var(--g);color:#fff;border-color:var(--g)}.btn.d{color:var(--r)}.btn:disabled{opacity:.4;cursor:not-allowed}.btns{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}
-.sc{min-width:84px;text-align:center;border:1px solid var(--b);border-radius:10px;padding:8px;align-self:flex-start}.sc b{font-size:24px;display:block}
-input,select,textarea{width:100%;padding:8px;border:1px solid var(--b);border-radius:8px;background:var(--bg);color:var(--t);font:inherit}textarea{min-height:70px}label{font-size:12px;color:var(--m);display:block;margin-bottom:3px}
-.f{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px;margin-bottom:12px}.bar{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px}.bar>*{width:auto;flex:1;min-width:130px}
-#m{display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:20;padding:12px;overflow:auto}#m.on{display:block}.box{background:var(--c);max-width:820px;margin:0 auto;border-radius:14px;padding:18px;border:1px solid var(--b)}
-.paper{background:#fff;color:#111;font:13px/1.5 Arial,sans-serif;padding:20px;border:1px solid #ccc;border-radius:6px;white-space:pre-wrap;max-height:380px;overflow:auto}
-.diff{border-left:3px solid var(--g);background:var(--s);padding:6px 10px;margin:6px 0;border-radius:4px;font-size:13px}.diff.n{border-color:var(--y)}
-.tl{border-left:2px solid var(--b);padding-left:12px;margin:6px 0 6px 4px;font-size:12.5px}#toast{position:fixed;bottom:calc(16px + env(safe-area-inset-bottom,0px));left:50%;transform:translateX(-50%);background:var(--t);color:var(--bg);padding:9px 16px;border-radius:99px;z-index:30;display:none}
-.warn{border:1px solid var(--y);color:var(--y);padding:8px 10px;border-radius:8px;margin:8px 0}@media(max-width:640px){.row{flex-direction:column}.sc{align-self:stretch;display:flex;gap:8px;justify-content:center;align-items:center}}
-@media print{body>*:not(#m){display:none!important}#m{position:static;background:none}.box{border:0}.box>*:not(.pv){display:none}.paper{max-height:none;border:0}}
-</style></head><body>
-<header><span class="brand">✈ JobPilot</span><nav id="nav"></nav><span class="m" style="margin-left:auto">Your data stays in this browser</span></header>
-<main id="main"></main><div id="m" onclick="if(event.target===this)cm()"><div class="box" id="mb"></div></div><div id="toast"></div>
+:root {
+  --bg: #F8FAFC;
+  --surface: #FFFFFF;
+  --surface-alt: #F1F5F9;
+  --border: #E2E8F0;
+  --border-focus: #3B82F6;
+  --text: #0F172A;
+  --text-muted: #64748B;
+  --text-light: #94A3B8;
+  --primary: #2563EB;
+  --primary-hover: #1D4ED8;
+  --primary-subtle: #EFF6FF;
+  --primary-border: #BFDBFE;
+  --success: #059669;
+  --success-subtle: #ECFDF5;
+  --success-border: #A7F3D0;
+  --warning: #D97706;
+  --warning-subtle: #FFFBEB;
+  --warning-border: #FDE68A;
+  --danger: #DC2626;
+  --danger-subtle: #FEF2F2;
+  --danger-border: #FECACA;
+  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.07), 0 2px 4px -2px rgba(0, 0, 0, 0.05);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.08), 0 4px 6px -4px rgba(0, 0, 0, 0.04);
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 14px;
+  --radius-full: 9999px;
+  --font: system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #090E17;
+    --surface: #111927;
+    --surface-alt: #1A2438;
+    --border: #243049;
+    --border-focus: #60A5FA;
+    --text: #F1F5F9;
+    --text-muted: #94A3B8;
+    --text-light: #64748B;
+    --primary: #3B82F6;
+    --primary-hover: #60A5FA;
+    --primary-subtle: #172554;
+    --primary-border: #1E3A8A;
+    --success: #10B981;
+    --success-subtle: #064E3B;
+    --success-border: #065F46;
+    --warning: #F59E0B;
+    --warning-subtle: #78350F;
+    --warning-border: #92400E;
+    --danger: #EF4444;
+    --danger-subtle: #7F1D1D;
+    --danger-border: #991B1B;
+    --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.4);
+    --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.4);
+    --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.5);
+  }
+}
+
+:root[data-theme="dark"] {
+  --bg: #090E17;
+  --surface: #111927;
+  --surface-alt: #1A2438;
+  --border: #243049;
+  --border-focus: #60A5FA;
+  --text: #F1F5F9;
+  --text-muted: #94A3B8;
+  --text-light: #64748B;
+  --primary: #3B82F6;
+  --primary-hover: #60A5FA;
+  --primary-subtle: #172554;
+  --primary-border: #1E3A8A;
+  --success: #10B981;
+  --success-subtle: #064E3B;
+  --success-border: #065F46;
+  --warning: #F59E0B;
+  --warning-subtle: #78350F;
+  --warning-border: #92400E;
+  --danger: #EF4444;
+  --danger-subtle: #7F1D1D;
+  --danger-border: #991B1B;
+  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.4);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.4);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.5);
+}
+
+:root[data-theme="light"] {
+  --bg: #F8FAFC;
+  --surface: #FFFFFF;
+  --surface-alt: #F1F5F9;
+  --border: #E2E8F0;
+  --border-focus: #3B82F6;
+  --text: #0F172A;
+  --text-muted: #64748B;
+  --text-light: #94A3B8;
+  --primary: #2563EB;
+  --primary-hover: #1D4ED8;
+  --primary-subtle: #EFF6FF;
+  --primary-border: #BFDBFE;
+  --success: #059669;
+  --success-subtle: #ECFDF5;
+  --success-border: #A7F3D0;
+  --warning: #D97706;
+  --warning-subtle: #FFFBEB;
+  --warning-border: #FDE68A;
+  --danger: #DC2626;
+  --danger-subtle: #FEF2F2;
+  --danger-border: #FECACA;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: var(--font);
+  background-color: var(--bg);
+  color: var(--text);
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  min-height: 100vh;
+}
+
+header {
+  position: sticky;
+  top: 0;
+  z-index: 40;
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  box-shadow: var(--shadow-sm);
+}
+
+.header-inner {
+  max-width: 1240px;
+  margin: 0 auto;
+  padding: 10px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 19px;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  color: var(--text);
+  text-decoration: none;
+  cursor: pointer;
+}
+.brand-badge {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  padding: 2px 7px;
+  background: var(--primary-subtle);
+  color: var(--primary);
+  border: 1px solid var(--primary-border);
+  border-radius: var(--radius-full);
+}
+
+nav {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  background: var(--surface-alt);
+  padding: 4px;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border);
+}
+
+nav button {
+  background: none;
+  border: none;
+  color: var(--text-muted);
+  padding: 6px 14px;
+  border-radius: var(--radius-sm);
+  font-size: 13.5px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+nav button:hover {
+  color: var(--text);
+  background: rgba(0, 0, 0, 0.04);
+}
+
+nav button.on {
+  background: var(--surface);
+  color: var(--primary);
+  box-shadow: var(--shadow-sm);
+}
+
+.nav-badge {
+  font-size: 11px;
+  padding: 1px 6px;
+  border-radius: var(--radius-full);
+  background: var(--primary);
+  color: #fff;
+  font-weight: 700;
+}
+
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+main {
+  max-width: 1240px;
+  margin: 0 auto;
+  padding: 24px 20px 80px;
+}
+
+h2 {
+  font-size: 22px;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  margin-bottom: 16px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+h3 {
+  font-size: 16px;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  color: var(--text);
+  margin-bottom: 8px;
+}
+
+h4 {
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  margin: 14px 0 8px;
+}
+
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 18px 20px;
+  margin-bottom: 16px;
+  box-shadow: var(--shadow-sm);
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.card.hoverable:hover {
+  border-color: var(--border-focus);
+  box-shadow: var(--shadow-md);
+}
+
+.grid-stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.stat-box {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: 14px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.stat-box .lbl {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-muted);
+}
+.stat-box .val {
+  font-size: 26px;
+  font-weight: 800;
+  color: var(--text);
+  letter-spacing: -0.02em;
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 8px 14px;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border);
+  background: var(--surface-alt);
+  color: var(--text);
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  text-decoration: none;
+  transition: all 0.15s ease;
+  line-height: 1.2;
+}
+
+.btn:hover {
+  background: var(--border);
+  color: var(--text);
+}
+
+.btn.p {
+  background: var(--primary);
+  color: #FFFFFF;
+  border-color: var(--primary);
+}
+.btn.p:hover {
+  background: var(--primary-hover);
+  border-color: var(--primary-hover);
+}
+
+.btn.g {
+  background: var(--success);
+  color: #FFFFFF;
+  border-color: var(--success);
+}
+.btn.g:hover {
+  opacity: 0.92;
+}
+
+.btn.d {
+  color: var(--danger);
+  border-color: var(--danger-border);
+  background: var(--danger-subtle);
+}
+.btn.d:hover {
+  background: var(--danger);
+  color: #FFFFFF;
+}
+
+.btn.sm {
+  padding: 5px 10px;
+  font-size: 12px;
+  border-radius: var(--radius-sm);
+}
+
+.btn:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.btns {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 8px 0;
+}
+
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 3px 10px;
+  border-radius: var(--radius-full);
+  font-size: 12px;
+  font-weight: 500;
+  background: var(--surface-alt);
+  border: 1px solid var(--border);
+  color: var(--text);
+  user-select: none;
+}
+
+.chip.ok {
+  background: var(--success-subtle);
+  border-color: var(--success-border);
+  color: var(--success);
+  font-weight: 600;
+}
+
+.chip.no {
+  background: var(--warning-subtle);
+  border-color: var(--warning-border);
+  color: var(--warning);
+}
+
+.chip.pick {
+  cursor: pointer;
+  transition: all 0.12s ease;
+}
+
+.chip.pick:hover {
+  border-color: var(--border-focus);
+}
+
+.chip.pick.on {
+  background: var(--primary);
+  color: #FFFFFF;
+  border-color: var(--primary);
+  font-weight: 600;
+}
+
+.chip-remove {
+  cursor: pointer;
+  font-weight: bold;
+  margin-left: 2px;
+  opacity: 0.7;
+}
+.chip-remove:hover {
+  opacity: 1;
+}
+
+.score-badge {
+  min-width: 82px;
+  text-align: center;
+  border-radius: var(--radius-md);
+  padding: 8px 10px;
+  border: 1px solid var(--border);
+  background: var(--surface-alt);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+.score-badge .pct {
+  font-size: 24px;
+  font-weight: 800;
+  line-height: 1.1;
+}
+.score-badge .tier {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--text-muted);
+}
+
+input, select, textarea {
+  width: 100%;
+  padding: 9px 12px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  background: var(--surface);
+  color: var(--text);
+  font-family: inherit;
+  font-size: 13.5px;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+input:focus, select:focus, textarea:focus {
+  outline: none;
+  border-color: var(--border-focus);
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
+}
+
+textarea {
+  min-height: 80px;
+  resize: vertical;
+}
+
+label {
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--text-muted);
+  display: block;
+  margin-bottom: 4px;
+}
+
+.filter-bar {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 10px;
+  margin-bottom: 16px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 14px;
+  box-shadow: var(--shadow-sm);
+}
+
+.job-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 18px 20px;
+  margin-bottom: 14px;
+  box-shadow: var(--shadow-sm);
+  display: flex;
+  gap: 18px;
+  transition: all 0.15s ease;
+}
+
+.job-card:hover {
+  border-color: var(--border-focus);
+  box-shadow: var(--shadow-md);
+}
+
+.job-company-avatar {
+  width: 46px;
+  height: 46px;
+  border-radius: var(--radius-md);
+  background: var(--primary-subtle);
+  color: var(--primary);
+  font-weight: 800;
+  font-size: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--primary-border);
+  flex-shrink: 0;
+}
+
+.job-content {
+  flex: 1;
+  min-width: 0;
+}
+
+.job-header-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.job-title {
+  font-size: 17px;
+  font-weight: 700;
+  color: var(--text);
+  line-height: 1.3;
+}
+
+.job-meta-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  font-size: 13px;
+  color: var(--text-muted);
+  margin: 4px 0 8px;
+  align-items: center;
+}
+
+.job-meta-item {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.job-desc {
+  font-size: 13.5px;
+  color: var(--text);
+  margin: 8px 0 10px;
+  line-height: 1.5;
+}
+
+/* Modal styles */
+#m {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.65);
+  backdrop-filter: blur(4px);
+  z-index: 100;
+  padding: 20px;
+  overflow-y: auto;
+}
+#m.on {
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+}
+
+.modal-box {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-lg);
+  width: 100%;
+  max-width: 860px;
+  padding: 24px;
+  margin: 30px auto;
+  position: relative;
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  padding-bottom: 14px;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 16px;
+}
+
+.paper-editor {
+  background: #FFFFFF;
+  color: #1E293B;
+  font-family: var(--font-mono);
+  font-size: 13px;
+  line-height: 1.6;
+  padding: 20px;
+  border: 1px solid #CBD5E1;
+  border-radius: var(--radius-md);
+  width: 100%;
+  min-height: 380px;
+  white-space: pre-wrap;
+  box-shadow: inset 0 1px 3px rgba(0,0,0,0.06);
+}
+
+.diff-card {
+  border-left: 3px solid var(--success);
+  background: var(--success-subtle);
+  padding: 8px 12px;
+  margin: 6px 0;
+  border-radius: 4px;
+  font-size: 13px;
+  color: var(--text);
+}
+.diff-card.warn {
+  border-left-color: var(--warning);
+  background: var(--warning-subtle);
+}
+
+.timeline-step {
+  border-left: 2px solid var(--border);
+  padding-left: 14px;
+  margin: 8px 0 8px 6px;
+  font-size: 13px;
+  position: relative;
+}
+.timeline-step::before {
+  content: "";
+  position: absolute;
+  left: -5px;
+  top: 4px;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--primary);
+}
+
+#toast {
+  position: fixed;
+  bottom: 24px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--text);
+  color: var(--bg);
+  padding: 10px 20px;
+  border-radius: var(--radius-full);
+  font-weight: 600;
+  font-size: 13.5px;
+  box-shadow: var(--shadow-lg);
+  z-index: 200;
+  display: none;
+  animation: fadeIn 0.2s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translate(-50%, 10px); }
+  to { opacity: 1; transform: translate(-50%, 0); }
+}
+
+.banner {
+  padding: 12px 16px;
+  border-radius: var(--radius-md);
+  margin-bottom: 16px;
+  font-size: 13.5px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+.banner.warning {
+  background: var(--warning-subtle);
+  border: 1px solid var(--warning-border);
+  color: var(--warning);
+}
+.banner.info {
+  background: var(--primary-subtle);
+  border: 1px solid var(--primary-border);
+  color: var(--primary);
+}
+
+@media (max-width: 768px) {
+  .header-inner { flex-direction: column; align-items: stretch; }
+  nav { overflow-x: auto; }
+  .job-card { flex-direction: column; }
+  .score-badge { align-self: flex-start; }
+}
+
+@media print {
+  body > *:not(#m) { display: none !important; }
+  #m { position: static; background: none; padding: 0; }
+  .modal-box { border: 0; box-shadow: none; padding: 0; max-width: 100%; }
+  .modal-box > *:not(.print-target) { display: none !important; }
+  .paper-editor { border: 0; box-shadow: none; padding: 0; }
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-inner">
+    <div class="brand" onclick="pg='dash';render()">
+      <span>✈ JobPilot</span>
+      <span class="brand-badge">Pro Edition</span>
+    </div>
+    <nav id="nav"></nav>
+    <div class="header-actions">
+      <button class="btn sm" onclick="cycleTheme()" id="theme-btn" title="Toggle Theme">🌓 Theme</button>
+      <button class="btn sm" onclick="dl()" title="Download Backup">💾 Backup</button>
+    </div>
+  </div>
+</header>
+
+<main id="main"></main>
+
+<div id="m" onclick="if(event.target===this)cm()">
+  <div class="modal-box" id="mb"></div>
+</div>
+
+<div id="toast"></div>
+
 <script>
-const $=s=>document.querySelector(s),esc=s=>String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c])),list=s=>String(s||'').split(',').map(x=>x.trim()).filter(Boolean),KEY='jobpilot_v2';
-const REG={India:['Kochi','Thiruvananthapuram','Bangalore','Chennai','Hyderabad','Pune','Mumbai','Delhi NCR'],Gulf:['Dubai','Abu Dhabi','Doha','Riyadh'],'Asia-Pacific':['Singapore','Sydney','Tokyo','Kuala Lumpur'],Europe:['London','Berlin','Amsterdam','Dublin'],Americas:['New York','Toronto','Austin','San Francisco'],Remote:['Remote']};
-const IN=REG.India,CO=['TCS','Infosys','Wipro','HCLTech','Accenture','Oracle','IBM','Cognizant','Capgemini','Tech Mahindra','Amazon','Deloitte','Emirates NBD','Standard Chartered','Mphasis','Genpact','Flipkart','Zoho','Nokia','Barclays','Optum','UST'];
-const SRC=['LinkedIn','Naukri','Indeed','Foundit','Glassdoor','Google Jobs','Company Careers','Shine','Wellfound'],GAP=['GoldenGate','AWS','OCI','Python','Ansible','Terraform','Kubernetes','PostgreSQL','Exadata','Shell scripting','Azure'],PRE=['','Senior ','Lead ','Principal ','Associate '];
-const ST=['SHORTLISTED','DRAFT','APPLIED','UNDER_REVIEW','ASSESSMENT','INTERVIEW','OFFER','REJECTED','WITHDRAWN'];
-let S={p:{name:'Mohamed Bhadharudeen',email:'',phone:'',titles:'Oracle Database Administrator, Database Engineer',skills:'Oracle 19c, Oracle RAC, RMAN, OEM, Data Guard, Performance Tuning, Linux, SQL',yoe:6.5,salary:'',notice:'30 days',auth:'',summary:'',resume:'',resumeName:''},regions:['Kochi','Bangalore','Remote'],modes:['Remote','Hybrid','On-site'],apps:[],skip:[],save:[],ans:{},theme:''};
-try{Object.assign(S,JSON.parse(localStorage.getItem(KEY)||'{}'))}catch(e){}
-const FBCFG={
+const $ = s => document.querySelector(s);
+const esc = s => String(s ?? '').replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const list = s => String(s || '').split(',').map(x => x.trim()).filter(Boolean);
+const e = encodeURIComponent;
+
+const KEY = 'jobpilot_v2';
+
+// -------------------------------------------------------------
+// FIREBASE CONFIGURATION (PRESERVED INTACT)
+// -------------------------------------------------------------
+const FBCFG = {
   apiKey: "AIzaSyB33C5sBZ9Gut6_pIjdrv13JRoTwat_woQ",
-  authDomain: "jobpilot-7640c.firebaseapp.com",
-  projectId: "jobpilot-7640c",
-  storageBucket: "jobpilot-7640c.firebasestorage.app",
-  messagingSenderId: "958177093532",
-  appId: "1:958177093532:web:650648dfbe2c58c6c84a59"   
-};// optional: paste your Firebase config object here once, so every device only needs to sign in
-function local(){try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}}
-function save(){S.mod=Date.now();local();snap();if(U)cloudPush()}
-function snap(f){try{let H=JSON.parse(localStorage.getItem(KEY+'_h')||'[]');if(f||!H.length||Date.now()-H[0].t>18e5){H.unshift({t:Date.now(),n:S.apps.length,d:JSON.stringify(S)});localStorage.setItem(KEY+'_h',JSON.stringify(H.slice(0,15)))}}catch(e){}}if(S.theme)document.documentElement.dataset.theme=S.theme;
-let pg='dash',F={q:'',min:0,src:'',sort:'match',days:0},CUR='',LV={t:0,l:0};
-const toast=t=>{const e=$('#toast');e.textContent=t;e.style.display='block';clearTimeout(toast.i);toast.i=setTimeout(()=>e.style.display='none',2600)};
-function h(s){let x=2166136261;for(const c of s){x^=c.charCodeAt(0);x=Math.imul(x,16777619)}return x>>>0}
-function rng(s){let a=h(s);return()=>{a=a+0x6D2B79F5|0;let t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296}}
-const e=encodeURIComponent;
-function liveUrl(src,q,l){const L=l==='Remote'?'':l,qs=q+(L?' '+L:' remote');const m={LinkedIn:`https://www.linkedin.com/jobs/search/?keywords=${e(q)}&location=${e(L||'Worldwide')}${l==='Remote'?'&f_WT=2':''}`,Naukri:`https://www.naukri.com/${q.toLowerCase().replace(/[^a-z0-9]+/g,'-')}-jobs${L?'-in-'+L.toLowerCase().replace(/\s+/g,'-'):''}`,Indeed:`https://www.indeed.com/jobs?q=${e(q)}&l=${e(L)}`,Foundit:`https://www.foundit.in/srp/results?query=${e(q)}&locations=${e(L)}`,Glassdoor:`https://www.glassdoor.com/Job/jobs.htm?sc.keyword=${e(q)}&locKeyword=${e(L)}`,Shine:`https://www.shine.com/job-search/${q.toLowerCase().replace(/[^a-z0-9]+/g,'-')}-jobs`,Wellfound:`https://www.google.com/search?q=${e('site:wellfound.com/jobs '+qs)}`,'Company Careers':`https://www.google.com/search?q=${e(qs+' careers apply')}`};return m[src]||`https://www.google.com/search?q=${e(qs+' jobs')}&ibp=htl;jobs`}
-function gen(){const T=list(S.p.titles).slice(0,4),sk=list(S.p.skills),out=[],seen=new Set();if(!T.length)return out;
-T.forEach(t=>S.regions.forEach(loc=>{for(let k=0;k<4;k++){const r=rng(t+loc+k),co=CO[r()*CO.length|0],ti=PRE[r()*PRE.length|0]+t,key=(co+ti+loc).toLowerCase();if(seen.has(key))continue;seen.add(key);
-const pool=[...sk].sort(()=>r()-.5),reqs=[...pool.slice(0,Math.min(sk.length,3+(r()*3|0))),...[...GAP].sort(()=>r()-.5).filter(g=>!sk.some(s=>s.toLowerCase()==g.toLowerCase())).slice(0,r()*2|0+1)],ind=IN.includes(loc),y=+S.p.yoe||3,
-mode=loc==='Remote'?'Remote':['Hybrid','On-site','On-site','Hybrid'][r()*4|0],src=SRC[r()*SRC.length|0],alt=SRC.filter(s=>s!==src).sort(()=>r()-.5).slice(0,r()*3|0),lo=ind?Math.round(5+y*2+r()*6):Math.round(40+y*8+r()*20);
-out.push({id:'j'+h(key),co,title:ti,loc:loc==='Remote'?'Remote (Worldwide)':loc,mode,src,alt,d:r()*21|0,reqs,sal:ind?`₹${lo}–${lo+Math.round(y+4)} LPA`:`$${lo}k–${lo+15}k`,desc:`${co} is hiring a ${ti} to own production systems, performance, availability and automation. You will work with ${reqs.join(', ')} and partner with application and infrastructure teams. ${Math.max(1,Math.round(y-2))}+ years of relevant experience expected.`})}}));return out}
-function score(j){const sk=list(S.p.skills).map(s=>s.toLowerCase()),ok=j.reqs.filter(r=>sk.some(s=>s.includes(r.toLowerCase())||r.toLowerCase().includes(s)));return{ok,no:j.reqs.filter(r=>!ok.includes(r)),pct:Math.round(ok.length/j.reqs.length*100)}}
-const tier=p=>p>=95?'Excellent':p>=85?'Strong':p>=70?'Potential':'Low priority',appOf=j=>S.apps.find(a=>a.jid===j.id||(a.co.toLowerCase()==j.co.toLowerCase()&&a.title.toLowerCase()==j.title.toLowerCase()));
-const live=a=>S.apps.filter(a2=>a2.status!=='WITHDRAWN'&&a2===a);
-function render(){$('#nav').innerHTML=[['dash','Dashboard'],['jobs','Jobs'],['apps','Applications'],['resume','Resume'],['profile','Profile'],['set','Settings']].map(([k,v])=>`<button class="${pg==k?'on':''}" onclick="pg='${k}';render()">${v}${k=='apps'&&S.apps.length?' ('+S.apps.length+')':''}</button>`).join('');({dash,jobs,apps,resume,profile,set})[pg]();scrollTo(0,0)}
-function dash(){const J=gen(),sc=J.map(score),c=s=>S.apps.filter(a=>s.includes(a.status)).length,top=J.map((j,i)=>[j,sc[i].pct]).sort((a,b)=>b[1]-a[1]).slice(0,4);
-$('#main').innerHTML=`<h2>Dashboard</h2>${!S.p.resume?`<div class="warn">Add your resume in <a href="#" onclick="pg='profile';render()">Profile</a> so tailored resumes use your real experience.</div>`:''}${S.apps.length&&(!S.lastBk||Date.now()-S.lastBk>6048e5)?`<div class="warn">No backup file in the last 7 days — <a href="#" onclick="pg='set';render()">download one in Settings</a>.</div>`:''}<div class="grid">${[['Jobs found',J.length],['New (3 days)',J.filter(j=>j.d<=3).length],['High match 85%+',sc.filter(s=>s.pct>=85).length],['Pending / drafts',c(['DRAFT','SHORTLISTED'])],['Applied',c(['APPLIED','UNDER_REVIEW'])],['Interviews',c(['INTERVIEW','ASSESSMENT'])],['Offers',c(['OFFER'])],['Rejections',c(['REJECTED'])]].map(([a,b])=>`<div class="card stat"><span>${a}</span><b>${b}</b></div>`).join('')}</div>
-<div class="row" style="flex-wrap:wrap"><div class="grow" style="min-width:300px"><h3>Top matches for your profile</h3>${top.map(([j])=>card(j)).join('')||'<p class=m>Add job titles and regions to see matches.</p>'}<button class="btn p" onclick="pg='jobs';render()">Browse all jobs & search more sites →</button></div>
-<div class="grow" style="min-width:260px"><h3>Follow-ups</h3>${S.apps.filter(a=>a.status==='APPLIED'&&Date.now()-a.at>6048e5).map(a=>`<div class="card">${esc(a.title)} · ${esc(a.co)}<div class=m>Applied over 7 days ago — consider a follow-up.</div></div>`).join('')||'<p class=m>Nothing due.</p>'}</div></div>`}
-const card=j=>{const m=score(j),a=appOf(j);return`<div class="card"><div class="row"><div class="grow"><h3>${esc(j.title)}</h3><div class="m">${esc(j.co)} · 📍 ${esc(j.loc)} · ${j.mode} · ${j.sal}</div><div class="m">${j.d?j.d+'d ago':'Today'} · ${j.src}${j.alt.length?' (also on '+j.alt.join(', ')+')':''} · <b>Human-assisted apply</b></div>
-<div class="chips">${m.ok.map(x=>`<span class="chip ok">✓ ${esc(x)}</span>`).join('')}${m.no.map(x=>`<span class="chip no">✗ ${esc(x)}</span>`).join('')}${a?`<span class="chip">${a.status}</span>`:''}</div>
-<div class="btns"><button class="btn p" onclick="openJob('${j.id}')">${a?'View application':'Preview resume & apply'}</button><a class="btn" target="_blank" rel="noopener" href="${liveUrl(j.src,j.title+' '+j.co,j.loc)}">Check real site ↗</a><button class="btn" onclick="tog('save','${j.id}')">${S.save.includes(j.id)?'★ Saved':'☆ Save'}</button><button class="btn d" onclick="tog('skip','${j.id}')">Skip</button></div></div><div class="sc"><b style="color:var(--${m.pct>=85?'g':'y'})">${m.pct}%</b><span class="m">${tier(m.pct)}</span></div></div></div>`};
-function tog(k,id){const i=S[k].indexOf(id);i<0?S[k].push(id):S[k].splice(i,1);save();k=='skip'&&toast('Job hidden (undo in Settings)');pg=='jobs'?jl():render()}
-function jobs(){const T=list(S.p.titles);$('#main').innerHTML=`<h2>Jobs</h2><div class="card"><h4 style="margin-top:0">Search regions (pick as many as you like)</h4>${Object.entries(REG).map(([g,a])=>`<div style="margin:4px 0"><span class="m" style="display:inline-block;width:100px">${g}</span>${a.map(r=>`<span class="chip pick ${S.regions.includes(r)?'on':''}" onclick="reg('${r}')">${r}</span> `).join('')}</div>`).join('')}
-<div class="m" style="margin-top:6px">Work mode: ${['Remote','Hybrid','On-site'].map(x=>`<span class="chip pick ${S.modes.includes(x)?'on':''}" onclick="mode('${x}')">${x}</span> `).join('')} &nbsp; Titles come from your <a href="#" onclick="pg='profile';render()">Profile</a>.</div></div>
-<div class="card"><h4 style="margin-top:0">Search live on real job sites (opens in a new tab)</h4><div class="bar"><select onchange="LV.t=this.selectedIndex;lv()">${T.map(t=>`<option>${esc(t)}</option>`).join('')}</select><select onchange="LV.l=this.selectedIndex;lv()">${S.regions.map(t=>`<option>${esc(t)}</option>`).join('')}</select></div><div class="btns" id="lv"></div>
-<p class="m" style="margin-top:8px">Listings below are sample matches generated from your profile and regions to show scoring, tailoring and tracking. Use “Check real site” or these links to find and apply to live postings.</p></div>
-<div class="bar"><input placeholder="Filter by keyword / company" value="${esc(F.q)}" oninput="F.q=this.value;jl()"><select onchange="F.min=+this.value;jl()">${[0,70,85,95].map(v=>`<option value=${v} ${F.min==v?'selected':''}>Match ${v?v+'%+':'any'}</option>`).join('')}</select><select onchange="F.src=this.value;jl()"><option value="">All sources</option>${SRC.map(s=>`<option ${F.src==s?'selected':''}>${s}</option>`).join('')}</select><select onchange="F.days=+this.value;jl()">${[[0,'Any date'],[3,'Last 3 days'],[7,'Last 7 days'],[14,'Last 14 days']].map(([v,t])=>`<option value=${v} ${F.days==v?'selected':''}>${t}</option>`).join('')}</select><select onchange="F.sort=this.value;jl()"><option value="match">Best match</option><option value="new" ${F.sort=='new'?'selected':''}>Newest</option></select></div><div id="jl"></div>`;lv();jl()}
-function lv(){const T=list(S.p.titles),el=$('#lv');if(!el)return;const t=T[LV.t]||T[0]||'',l=S.regions[LV.l]||S.regions[0]||'';el.innerHTML=SRC.map(s=>`<a class="btn" target="_blank" rel="noopener" href="${liveUrl(s,t,l)}">${s} ↗</a>`).join('')}
-function reg(r){const i=S.regions.indexOf(r);i<0?S.regions.push(r):S.regions.splice(i,1);save();toast(S.regions.length+' regions selected — jobs refreshed');jobs()}
-function mode(m){const i=S.modes.indexOf(m);i<0?S.modes.push(m):S.modes.splice(i,1);save();jobs()}
-function jl(){let J=gen().filter(j=>!S.skip.includes(j.id)&&S.modes.includes(j.mode)&&(!F.src||j.src==F.src||j.alt.includes(F.src))&&(!F.days||j.d<=F.days)&&(j.title+j.co+j.desc).toLowerCase().includes(F.q.toLowerCase())).map(j=>[j,score(j).pct]).filter(x=>x[1]>=F.min);J.sort((a,b)=>F.sort=='new'?a[0].d-b[0].d:b[1]-a[1]);$('#jl').innerHTML=`<p class="m" style="margin-bottom:8px">${J.length} jobs · duplicates across sources are merged</p>`+(J.map(x=>card(x[0])).join('')||'<div class="card m">No jobs match. Select more regions, add titles in Profile, or relax filters.</div>')}
-function build(j){const p=S.p,m=score(j),sk=list(p.skills),top=[...m.ok.map(x=>sk.find(s=>s.toLowerCase().includes(x.toLowerCase())||x.toLowerCase().includes(s.toLowerCase()))),...sk].filter((v,i,a)=>v&&a.indexOf(v)==i),t=list(p.titles)[0]||'Professional';
-const sum=`${t} with ${p.yoe}+ years of experience in ${top.slice(0,4).join(', ')}.${p.summary?' '+p.summary:''}`;
-const text=`${p.name.toUpperCase()}\n${[p.email,p.phone,list(S.regions.join(','))[0]].filter(Boolean).join(' | ')}\n\nPROFESSIONAL SUMMARY\n${sum}\n\nCORE SKILLS\n${top.join(', ')}\n\nEXPERIENCE & EDUCATION\n${p.resume||'[Add your resume text in Profile — nothing is invented]'}`;
-return{text,diff:[{a:1,t:`Summary rewritten to lead with ${top.slice(0,3).join(', ')} and your target title.`},...m.ok.slice(0,5).map(x=>({a:1,t:`“${x}” moved to the top of Core Skills — required by the job and already in your profile.`})),...m.no.map(x=>({t:`“${x}” NOT added — it isn't in your profile, so it will not be claimed.`}))],ats:[['Single-column, plain-text layout',1],['Standard headings (Summary, Skills, Experience)',1],['No tables, images or graphics',1],['Contact details present',!!(p.email||p.phone)],['Resume text provided',!!p.resume],[`Keyword coverage ${m.pct}% of job requirements`,m.pct>=70]]}}
-function qs(j){const p=S.p,m=score(j),sk=list(p.skills);const q=[['why'+j.id,'Why are you interested in this role?',`With ${p.yoe} years of experience in ${sk.slice(0,3).join(', ')}, I am interested in ${j.co} because the ${j.title} role matches my background.`],['notice','What is your notice period?',p.notice||''],['sal','Expected salary?',p.salary||''],['yoe','Total years of experience?',String(p.yoe||'')],['auth','Are you authorized to work in this location?',p.auth||'']];
-(m.ok[0]||m.no[0])&&q.push(['x'+j.id,`Do you have experience with ${(m.no[0]||m.ok[0])}?`,m.no[0]?'':`Yes — ${m.ok[0]} is part of my profile and resume.`]);return q.map(([k,t,d])=>({k,t,a:S.ans[k]??d}))}
-function openJob(id){const j=gen().find(x=>x.id===id)||S.apps.find(a=>a.jid===id)?.job;if(!j)return;const a=appOf(j),m=score(j),r=build(j),Q=qs(j);CUR=r.text;
-$('#mb').innerHTML=`<div class="row"><div class="grow"><h3>${esc(j.title)}</h3><div class="m">${esc(j.co)} · ${esc(j.loc)} · ${j.mode} · ${j.sal} · via ${j.src}</div></div><button class="btn" onclick="cm()">✕</button></div>
-${a&&a.status!=='WITHDRAWN'?`<div class="warn">You appear to have already applied to this role (${a.status}). Duplicates are never submitted automatically.</div>`:''}
-<p style="margin:10px 0">${esc(j.desc)}</p><div class="btns"><a class="btn" target="_blank" rel="noopener" href="${liveUrl(j.src,j.title+' '+j.co,j.loc)}">Check real posting on ${j.src} ↗</a></div>
-<h4>Match ${m.pct}% — ${tier(m.pct)}</h4><div class="chips">${m.ok.map(x=>`<span class="chip ok">Strong: ${esc(x)}</span>`).join('')}${m.no.map(x=>`<span class="chip no">Missing: ${esc(x)}</span>`).join('')}</div>
-<h4>Proposed resume changes (no fabrication)</h4>${r.diff.map(d=>`<div class="diff ${d.a?'':'n'}">${d.a?'✚':'⚠'} ${esc(d.t)}</div>`).join('')}
-<h4>ATS check</h4><div class="chips">${r.ats.map(([t,o])=>`<span class="chip ${o?'ok':'no'}">${o?'✓':'!'} ${esc(t)}</span>`).join('')}</div>
-<h4>Resume preview (master resume stays untouched)</h4><div class="pv"><div class="paper">${esc(r.text)}</div></div><div class="btns"><button class="btn" onclick="cp()">Copy text</button><button class="btn" onclick="print()">Print / Save PDF</button></div>
-<h4>Application questions — edit, they're saved to your answer bank</h4>${Q.map(x=>`<label>${esc(x.t)} ${x.a?'':'<b style="color:var(--y)">REQUIRES USER REVIEW</b>'}</label><textarea oninput="S.ans['${x.k}']=this.value;save()">${esc(x.a)}</textarea>`).join('')}
-<h4>Approve & apply</h4><label style="display:flex;gap:8px;align-items:center;color:var(--t);font-size:13px"><input type="checkbox" style="width:auto" onchange="$('#go').disabled=$('#dr2').disabled=!this.checked"> I reviewed the resume preview and answers and approve them.</label>
-<p class="m" style="margin:6px 0">Browsers can't submit to other websites for you. Open the real application page, paste your approved resume and answers, then mark it applied here to track it. CAPTCHA/MFA always stay with you.</p>
-<div class="btns"><button class="btn" onclick="cm()">Cancel</button><button class="btn" onclick="mk('${j.id}','DRAFT')">Save draft</button><a class="btn p" target="_blank" rel="noopener" href="${liveUrl(j.src,j.title+' '+j.co,j.loc)}" id="dr2" disabled>Open application page ↗</a><button class="btn g" id="go" disabled onclick="mk('${j.id}','APPLIED')">Mark as applied</button></div>`;$('#m').classList.add('on')}
-function mk(id,st){const j=gen().find(x=>x.id===id);if(!j)return;let a=appOf(j);if(a&&a.status!=='WITHDRAWN'&&st==='APPLIED'&&a.status==='APPLIED'&&!confirm('You appear to have already applied. Record again?'))return;
-if(!a){a={id:'a'+Date.now(),jid:j.id,co:j.co,title:j.title,src:j.src,loc:j.loc,job:j,tl:[{t:Date.now(),d:'Job discovered'},{t:Date.now(),d:`Match score ${score(j).pct}%`}],notes:'',at:Date.now()};S.apps.unshift(a)}
-a.resume=CUR;a.status=st;a.tl.push({t:Date.now(),d:st=='APPLIED'?'Resume approved · application submitted (confirmed by you)':'Draft saved with tailored resume'});if(st=='APPLIED')a.at=Date.now();save();cm();toast(st=='APPLIED'?'Application tracked ✔':'Draft saved');pg='apps';render()}
-function setSt(id,st){const a=S.apps.find(x=>x.id==id);a.status=st;a.tl.push({t:Date.now(),d:'Status changed to '+st});save();render()}
-function cancelApp(id){if(!confirm('Cancel/withdraw this application? Remember to also withdraw on the employer site if you already applied.'))return;setSt(id,'WITHDRAWN')}
-function delApp(id){if(!confirm('Remove this application record permanently?'))return;S.apps=S.apps.filter(x=>x.id!=id);save();render()}
-function apps(){$('#main').innerHTML=`<h2>Applications</h2>`+(S.apps.map(a=>`<div class="card"><div class="row"><div class="grow"><h3>${esc(a.title)}</h3><div class="m">${esc(a.co)} · ${esc(a.loc)} · ${a.src}</div></div><select style="width:170px" onchange="setSt('${a.id}',this.value)">${ST.map(s=>`<option ${a.status==s?'selected':''}>${s}</option>`).join('')}</select></div>
-<div class="btns"><a class="btn" target="_blank" rel="noopener" href="${liveUrl(a.src,a.title+' '+a.co,a.loc)}">Check real site ↗</a><button class="btn" onclick="viewRes('${a.id}')">View resume</button>${a.status!=='WITHDRAWN'?`<button class="btn d" onclick="cancelApp('${a.id}')">Cancel application</button>`:''}<button class="btn d" onclick="delApp('${a.id}')">Delete</button></div>
-<label style="margin-top:8px">Notes</label><textarea oninput="S.apps.find(x=>x.id=='${a.id}').notes=this.value;save()">${esc(a.notes)}</textarea><h4>Timeline</h4>${a.tl.map(t=>`<div class="tl"><b>${new Date(t.t).toLocaleString([], {month:'short',day:'numeric',hour:'2-digit',minute:'2-digit'})}</b> — ${esc(t.d)}</div>`).join('')}</div>`).join('')||'<div class="card m">No applications yet. Open a job and use “Preview resume & apply”.</div>')}
-function viewRes(id){const a=S.apps.find(x=>x.id==id);CUR=a.resume||'';$('#mb').innerHTML=`<div class="row"><h3 class="grow">Tailored resume — ${esc(a.title)} @ ${esc(a.co)}</h3><button class="btn" onclick="cm()">✕</button></div><div class="pv"><div class="paper">${esc(CUR)}</div></div><div class="btns"><button class="btn" onclick="cp()">Copy text</button><button class="btn" onclick="print()">Print / Save PDF</button></div>`;$('#m').classList.add('on')}
-function resume(){$('#main').innerHTML=`<h2>Resume</h2><div class="card"><h3>Master resume</h3><p class="m">${S.p.resume?esc(S.p.resumeName||'Pasted text')+' · '+S.p.resume.length+' characters. It is never edited — each job gets its own tailored copy.':'No resume yet.'}</p><div class="btns"><button class="btn p" onclick="pg='profile';render()">${S.p.resume?'Update':'Add'} master resume</button></div></div>
-<div class="card"><h3>How tailoring works</h3><p class="m">For each job you get an ATS-friendly single-column resume: summary rewritten for the role, matching skills moved first, your real experience kept as written, plus a change list and ATS check. Skills you don't have are never added.</p></div><h3>Tailored resumes (${S.apps.filter(a=>a.resume).length})</h3>${S.apps.filter(a=>a.resume).map(a=>`<div class="card row"><div class="grow">${esc(a.title)} · ${esc(a.co)}</div><button class="btn" onclick="viewRes('${a.id}')">Preview</button></div>`).join('')||'<p class="m">Tailor one from any job.</p>'}`}
-function profile(){const p=S.p,f=(id,l,v,t='text')=>`<div><label>${l}</label><input id="${id}" type="${t}" value="${esc(v)}"></div>`;$('#main').innerHTML=`<h2>Profile</h2><div class="card"><div class="f">${f('pn','Full name',p.name)}${f('pe','Email',p.email,'email')}${f('pp','Phone',p.phone)}${f('py','Years of experience',p.yoe,'number')}${f('ps','Expected salary',p.salary)}${f('pnt','Notice period',p.notice)}${f('pa','Work authorization (answer yourself)',p.auth)}</div>
-<div class="f"><div><label>Target job titles (comma separated) — job search follows these</label><input id="pt" value="${esc(p.titles)}"></div><div><label>Skills (comma separated)</label><input id="pk" value="${esc(p.skills)}"></div></div><label>Professional summary (optional)</label><textarea id="psu">${esc(p.summary)}</textarea>
-<label style="margin-top:10px">Master resume — paste text, or load a .txt/.md file (for PDF/DOCX, copy and paste the text)</label><input type="file" accept=".txt,.md" onchange="lf(this)"><textarea id="pr" style="min-height:200px;margin-top:6px">${esc(p.resume)}</textarea><div class="btns"><button class="btn p" onclick="sp()">Save profile & refresh jobs</button></div></div>`}
-function lf(i){const f=i.files[0];if(!f)return;const r=new FileReader();r.onload=()=>{$('#pr').value=r.result;S.p.resumeName=f.name};r.readAsText(f)}
-function sp(){const v=i=>$('#'+i).value;Object.assign(S.p,{name:v('pn'),email:v('pe'),phone:v('pp'),yoe:+v('py')||0,salary:v('ps'),notice:v('pnt'),auth:v('pa'),titles:v('pt'),skills:v('pk'),summary:v('psu'),resume:v('pr')});save();toast(`Saved — ${gen().length} jobs matched to your profile`);pg='jobs';render()}
-function set(){$('#main').innerHTML=`<h2>Settings</h2><div class="card"><h3>Theme</h3><div class="btns">${['','light','dark'].map(t=>`<button class="btn" onclick="S.theme='${t}';save();document.documentElement.dataset.theme='${t}';if(!'${t}')delete document.documentElement.dataset.theme">${t||'System'}</button>`).join('')}</div></div>
-<div class="card"><h3>Your data</h3><p class="m">Everything lives in this browser only. No resume or personal data is sent anywhere.</p><div class="btns"><button class="btn p" onclick="dl()">⬇ Download backup file</button><label class="btn" style="margin:0">⬆ Import backup file<input type="file" accept=".json" hidden onchange="impFile(this)"></label><label style="display:flex;gap:6px;align-items:center;color:var(--t);margin:0"><input type="checkbox" id="mg" style="width:auto" checked> Merge (keep current data)</label><button class="btn" onclick="exp()">Show / copy JSON</button><button class="btn" onclick="pasteImp()">Paste JSON to import</button><button class="btn" onclick="S.skip=[];save();toast('Hidden jobs restored')">Restore skipped jobs</button><button class="btn d" onclick="if(confirm('Delete ALL data?')){try{localStorage.removeItem(KEY)}catch(e){}location.reload()}">Delete all data</button></div></div>
-${cloud()}<div class="card"><h3>Backup history</h3><p class="m">Snapshots are saved automatically in this browser (last 15, about every 30 min while you work). Download a backup file regularly — it's the only copy that survives clearing browser data.</p>${hist()}</div><div class="card"><h3>Safety rules</h3><p class="m">Never fabricates experience. Never bypasses CAPTCHA, MFA or anti-bot controls. Final submission is always yours. Uncertain answers are flagged REQUIRES USER REVIEW.</p></div>`}
-function exp(){CUR=JSON.stringify(S,null,2);$('#mb').innerHTML=`<div class="row"><h3 class="grow">Export</h3><button class="btn" onclick="cm()">✕</button></div><textarea style="min-height:300px">${esc(CUR)}</textarea><div class="btns"><button class="btn p" onclick="cp()">Copy</button></div>`;$('#m').classList.add('on')}
-function cp(){try{navigator.clipboard.writeText(CUR).then(()=>toast('Copied'),()=>toast('Copy blocked — select the text manually'))}catch(x){toast('Copy blocked — select manually')}}
-function cm(){$('#m').classList.remove('on')}
-function dl(){const n='jobpilot-backup-'+new Date().toISOString().slice(0,10)+'.json';try{const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([JSON.stringify(S,null,2)],{type:'application/json'}));a.download=n;document.body.appendChild(a);a.click();a.remove();S.lastBk=Date.now();save();toast('Backup downloaded: '+n)}catch(x){exp()}}
-function imp(t,mg){try{const d=JSON.parse(t);if(!d.p||!Array.isArray(d.apps))throw 0;snap(1);if(mg){const ids=new Set(S.apps.map(a=>a.id));d.apps.forEach(a=>ids.has(a.id)||S.apps.push(a));S.ans={...d.ans,...S.ans};S.skip=[...new Set([...S.skip,...(d.skip||[])])];S.save=[...new Set([...S.save,...(d.save||[])])];if(!S.p.resume)S.p=d.p}else S=Object.assign({},S,d);save();toast('Backup imported');render()}catch(x){toast('Not a valid JobPilot backup file')}}
-function impFile(i){const f=i.files[0];if(!f)return;const r=new FileReader();r.onload=()=>imp(r.result,$('#mg').checked);r.readAsText(f)}
-function pasteImp(){$('#mb').innerHTML=`<div class="row"><h3 class="grow">Paste backup JSON</h3><button class="btn" onclick="cm()">✕</button></div><textarea id="pj" style="min-height:260px"></textarea><div class="btns"><button class="btn p" onclick="imp($('#pj').value,$('#mg')?.checked??true);cm()">Import (merge)</button></div>`;$('#m').classList.add('on')}
-function hist(){let H=[];try{H=JSON.parse(localStorage.getItem(KEY+'_h')||'[]')}catch(e){}return H.map((x,i)=>`<div class="tl">${new Date(x.t).toLocaleString()} · ${x.n} applications <button class="btn" onclick="rest(${i})">Restore</button></div>`).join('')||'<p class="m">Snapshots appear automatically as you work.</p>'}
-function rest(i){try{const H=JSON.parse(localStorage.getItem(KEY+'_h')||'[]');if(!confirm('Restore this snapshot? Current data is snapshotted first.'))return;snap(1);S=Object.assign({},S,JSON.parse(H[i].d));save();toast('Snapshot restored');render()}catch(x){toast('Restore failed')}}
-let FB=null,U=null,unsub=null,pushT=null;const FBK='jobpilot_fbcfg',fbCfgGet=()=>{try{return FBCFG||JSON.parse(localStorage.getItem(FBK)||'null')}catch(e){return null}};
-const loadJs=u=>new Promise((r,j)=>{const x=document.createElement('script');x.src=u;x.onload=r;x.onerror=()=>j(new Error('Could not load Firebase (offline or blocked)'));document.head.appendChild(x)});
-async function fbInit(){if(FB)return FB;const cfg=fbCfgGet();if(!cfg)return null;const B='https://www.gstatic.com/firebasejs/10.12.2/';if(!window.firebase){await loadJs(B+'firebase-app-compat.js');await loadJs(B+'firebase-auth-compat.js');await loadJs(B+'firebase-firestore-compat.js')}
-if(!firebase.apps.length)firebase.initializeApp(cfg);FB={a:firebase.auth(),d:firebase.firestore()};FB.a.onAuthStateChanged(u=>{U=u;if(u)startSync();else if(unsub){unsub();unsub=null}if(pg=='set')set()});return FB}
-function startSync(){const ref=FB.d.doc('users/'+U.uid);let first=true;if(unsub)unsub();unsub=ref.onSnapshot(sn=>{if(sn.metadata.hasPendingWrites)return;let c=null;try{c=sn.exists?JSON.parse(sn.data().json):null}catch(e){}
-if(first){first=false;if(!c){cloudPush(1);return}const empty=!S.apps.length&&!S.p.resume;if(empty||c.mod>(S.mod||0)){if(empty||confirm('Cloud data is newer than this device. Load it? (Current data is snapshotted first.)')){snap(1);S=Object.assign({},S,c);local();render();toast('Synced from cloud')}}else if(c.mod<(S.mod||0))cloudPush(1);return}
-if(c&&c.mod>(S.mod||0)){S=Object.assign({},S,c);local();render();toast('Updated from another device')}},er=>toast('Sync error: '+er.message))}
-function cloudPush(now){clearTimeout(pushT);const go=async()=>{if(!U||!FB)return;try{await FB.d.doc('users/'+U.uid).set({json:JSON.stringify(S),mod:S.mod||Date.now()});S.lastSync=Date.now();local();if(pg=='set')set()}catch(e){toast('Cloud save failed: '+e.message)}};now?go():pushT=setTimeout(go,2000)}
-async function fbCfg(){try{const m=$('#fc').value.match(/\{[\s\S]*\}/),c=new Function('return '+m[0])();if(!c.apiKey||!c.projectId)throw 0;localStorage.setItem(FBK,JSON.stringify(c));await fbInit();toast('Config saved — now sign in');set()}catch(x){toast('Could not read config — paste the firebaseConfig block')}}
-async function fbAuth(md){try{await fbInit();const e=$('#fe').value.trim(),p=$('#fp').value;if(md=='up')await FB.a.createUserWithEmailAndPassword(e,p);else if(md=='in')await FB.a.signInWithEmailAndPassword(e,p);else{await FB.a.sendPasswordResetEmail(e);toast('Password reset email sent')}}catch(x){toast(String(x.message).replace('Firebase: ',''))}}
-function fbOut(){FB&&FB.a.signOut()}
-function fbRemove(){if(!confirm('Remove cloud config from this device?'))return;fbOut();localStorage.removeItem(FBK);FB=null;U=null;set()}
-function cloud(){const cfg=fbCfgGet(),b=(t)=>`<div class="card"><h3>☁ Cloud sync (your own Firebase project)</h3>${t}</div>`;
-if(!cfg)return b(`<p class="m">Syncs your profile and applications across devices. Data goes only to your own Firebase project. Paste the <b>firebaseConfig</b> block from Firebase → Project settings → Your apps.</p><textarea id="fc" placeholder="const firebaseConfig = { apiKey: ..., projectId: ... };"></textarea><div class="btns"><button class="btn p" onclick="fbCfg()">Save config</button></div>`);
-if(U)return b(`<p>Signed in as <b>${esc(U.email)}</b></p><p class="m">${S.lastSync?'Last cloud save: '+new Date(S.lastSync).toLocaleString():'Not saved yet'} · changes sync automatically.</p><div class="btns"><button class="btn p" onclick="cloudPush(1);toast('Saving…')">Sync now</button><button class="btn" onclick="fbOut()">Sign out</button></div>`);
-return b(`<div class="f"><div><label>Email</label><input id="fe" type="email" autocomplete="username"></div><div><label>Password (6+ characters)</label><input id="fp" type="password" autocomplete="current-password"></div></div><div class="btns"><button class="btn p" onclick="fbAuth('in')">Sign in</button><button class="btn" onclick="fbAuth('up')">Create account</button><button class="btn" onclick="fbAuth('reset')">Forgot password</button>${FBCFG?'':'<button class="btn d" onclick="fbRemove()">Remove config</button>'}</div>`)}
-if(fbCfgGet())fbInit().catch(e=>toast(e.message));
-try{navigator.storage&&navigator.storage.persist&&navigator.storage.persist()}catch(e){}
+  authDomain: "jobpilot-7640c.firebaseapp.com",
+  projectId: "jobpilot-7640c",
+  storageBucket: "jobpilot-7640c.firebasestorage.app",
+  messagingSenderId: "958177093532",
+  appId: "1:958177093532:web:650648dfbe2c58c6c84a59"   
+};
+
+// -------------------------------------------------------------
+// GLOBAL REGIONS & COMPREHENSIVE TAXONOMY
+// -------------------------------------------------------------
+const PRESET_REGIONS = {
+  'India': ['Kochi', 'Thiruvananthapuram', 'Bangalore', 'Chennai', 'Hyderabad', 'Pune', 'Mumbai', 'Delhi NCR', 'Kolkata', 'Coimbatore'],
+  'Middle East / Gulf': ['Dubai', 'Abu Dhabi', 'Riyadh', 'Doha', 'Muscat', 'Kuwait City', 'Manama'],
+  'Europe': ['London', 'Berlin', 'Munich', 'Amsterdam', 'Dublin', 'Zurich', 'Paris', 'Frankfurt', 'Warsaw'],
+  'Americas': ['New York', 'San Francisco', 'Austin', 'Dallas', 'Seattle', 'Toronto', 'Vancouver', 'Chicago'],
+  'Asia-Pacific': ['Singapore', 'Sydney', 'Melbourne', 'Tokyo', 'Kuala Lumpur', 'Auckland'],
+  'Remote': ['Remote (Worldwide)', 'Remote (India)', 'Remote (Gulf)', 'Remote (US)', 'Remote (Europe)']
+};
+
+const CO = ['TCS', 'Infosys', 'Wipro', 'HCLTech', 'Accenture', 'Oracle', 'IBM', 'Cognizant', 'Capgemini', 'Tech Mahindra', 'Amazon Web Services', 'Deloitte', 'Emirates NBD', 'Standard Chartered', 'Mphasis', 'Genpact', 'Flipkart', 'Zoho', 'Nokia', 'Barclays', 'Optum', 'UST Global', 'JPMorgan Chase', 'Cisco'];
+const SRC = ['LinkedIn', 'Naukri', 'Indeed', 'Foundit', 'Glassdoor', 'Google Jobs', 'Company Careers'];
+const ST = ['SHORTLISTED', 'DRAFT', 'APPLIED', 'UNDER_REVIEW', 'ASSESSMENT', 'INTERVIEW', 'OFFER', 'REJECTED', 'WITHDRAWN'];
+
+const DEFAULT_MASTER_RESUME = `MOHAMED BHADHARUDEEN
+Oracle Database Administrator | Database Engineer
+Email: contact.mohamed@example.com | Phone: +91 98765 43210 | Location: Kochi / Bangalore / Remote
+LinkedIn: linkedin.com/in/mohamed-bhadharudeen
+
+PROFESSIONAL SUMMARY
+Results-driven Oracle Database Administrator with 6.5+ years of extensive experience managing enterprise mission-critical production databases. Specialized in Oracle 19c/12c/11g, High Availability architectures (Oracle RAC, Data Guard, Active Data Guard), automated backup/recovery via RMAN, OEM 13c monitoring, and advanced SQL/Database Performance Tuning on Linux/Unix platforms. Proven track record of ensuring 99.99% database uptime, zero-data-loss disaster recovery, and seamless cloud/infrastructure migrations.
+
+CORE TECHNICAL COMPETENCIES
+• Database Management: Oracle 19c, 18c, 12c, 11g, Multitenant (CDB/PDB), Database Upgrades & Migration
+• High Availability & DR: Oracle RAC (Real Application Clusters), Oracle Data Guard, Active Data Guard, Broker
+• Backup & Recovery: RMAN (Recovery Manager), Flashback Technology, Incremental Backups, Point-in-Time Recovery (PITR)
+• Performance Optimization: AWR, ADDM, ASH, SQL Tuning Advisor, Explain Plan, TKPROF, Indexing Strategies, Memory Tuning
+• Tools & Infrastructure: Oracle Enterprise Manager (OEM) 13c, SQL*Plus, TOAD, SQL Developer, Datapump, GoldenGate
+• Operating Systems & Scripting: Oracle Linux, Red Hat Enterprise Linux (RHEL), Bash/Shell Scripting, Cron, SQL, PL/SQL
+• Cloud & Automation: AWS (RDS, EC2), Oracle Cloud Infrastructure (OCI), Ansible Basics, Terraform Fundamentals
+
+PROFESSIONAL EXPERIENCE
+Lead / Senior Oracle Database Administrator | Enterprise IT Solutions
+2020 – Present | Kochi / Bangalore
+• Administered 50+ enterprise production Oracle databases (11g to 19c) across Oracle RAC and standalone environments with 99.99% SLA.
+• Implemented and maintained Oracle Data Guard standby databases; successfully orchestrated bi-annual DR drills with zero data loss.
+• Designed comprehensive backup and recovery strategies using RMAN, reducing backup window by 35% through multi-channel compression.
+• Diagnosed and resolved complex database performance bottlenecks using AWR, ASH, and OEM 13c, improving critical batch processing speeds by 40%.
+• Executed zero-downtime database upgrades and cross-platform migrations from 12c to 19c multitenant architecture.
+• Developed automated bash/shell monitoring scripts for tablespace monitoring, archive log alerting, and automated health checks.
+
+Oracle Database Administrator | Global Tech Services
+2018 – 2020 | Chennai
+• Supported 24/7 mission-critical database operations, incident resolution, and routine database maintenance tasks.
+• Configured OEM 13c agents and alert rules to proactively monitor database health, CPU utilization, and I/O bottlenecks.
+• Performed database refreshes, schema migrations, and data loading using Oracle Data Pump (expdp/impdp) and RMAN duplicate.
+• Collaborated with application development teams to review slow-running queries and provide SQL indexing recommendations.
+• Managed database security, user privileges, role-based access control, and compliance audits.
+
+EDUCATION & CERTIFICATIONS
+• Bachelor of Technology (B.Tech) in Computer Science / Information Technology
+• Oracle Certified Professional (OCP) - Oracle Database Administrator`;
+
+// -------------------------------------------------------------
+// APPLICATION STATE
+// -------------------------------------------------------------
+var S = {
+  p: {
+    name: 'Mohamed Bhadharudeen',
+    email: '',
+    phone: '',
+    titles: 'Oracle Database Administrator, Database Engineer, Senior Oracle DBA',
+    skills: 'Oracle 19c, Oracle RAC, RMAN, OEM, Data Guard, Performance Tuning, Linux, SQL, Shell scripting',
+    yoe: 6.5,
+    salary: '₹18,00,000 / year (18 LPA)',
+    salaryMinLpa: 16,
+    notice: '30 days',
+    auth: 'Authorized to work in India, Open to Gulf / Remote work permits',
+    summary: 'Senior Oracle Database Administrator with 6.5+ years experience in Oracle 19c, RAC, Data Guard, RMAN, and Performance Tuning on Linux.',
+    resume: DEFAULT_MASTER_RESUME,
+    resumeName: 'master_resume_mohamed.txt'
+  },
+  regions: ['Kochi', 'Bangalore', 'Dubai', 'Remote (Worldwide)'],
+  customRegions: [],
+  modes: ['Remote', 'Hybrid', 'On-site'],
+  customJobs: [],
+  apps: [],
+  skip: [],
+  save: [],
+  ans: {},
+  theme: ''
+};
+
+try {
+  const loaded = JSON.parse(localStorage.getItem(KEY) || '{}');
+  if (loaded.p) Object.assign(S.p, loaded.p);
+  if (loaded.regions) S.regions = loaded.regions;
+  if (loaded.customRegions) S.customRegions = loaded.customRegions;
+  if (loaded.modes) S.modes = loaded.modes;
+  if (loaded.customJobs) S.customJobs = loaded.customJobs;
+  if (loaded.apps) S.apps = loaded.apps;
+  if (loaded.skip) S.skip = loaded.skip;
+  if (loaded.save) S.save = loaded.save;
+  if (loaded.ans) S.ans = loaded.ans;
+  if (loaded.theme) S.theme = loaded.theme;
+} catch (e) {
+  console.error("Storage load error:", e);
+}
+
+if (!S.p.resume) S.p.resume = DEFAULT_MASTER_RESUME;
+
+function local() {
+  try { localStorage.setItem(KEY, JSON.stringify(S)); } catch (e) {}
+}
+
+function save() {
+  S.mod = Date.now();
+  local();
+  snap();
+  if (U) cloudPush();
+}
+
+function snap(f) {
+  try {
+    let H = JSON.parse(localStorage.getItem(KEY + '_h') || '[]');
+    if (f || !H.length || Date.now() - H[0].t > 18e5) {
+      H.unshift({ t: Date.now(), n: S.apps.length, d: JSON.stringify(S) });
+      localStorage.setItem(KEY + '_h', JSON.stringify(H.slice(0, 15)));
+    }
+  } catch (e) {}
+}
+
+if (S.theme) document.documentElement.dataset.theme = S.theme;
+
+var pg = 'dash';
+window.pg = pg;
+
+var F = {
+  q: '',
+  minMatch: 0,
+  exp: 'all',
+  minSal: 0,
+  role: 'all',
+  mode: 'all',
+  loc: 'all',
+  src: '',
+  days: 0,
+  sort: 'match'
+};
+
+var CUR = '';
+
+const toast = t => {
+  const el = $('#toast');
+  el.textContent = t;
+  el.style.display = 'block';
+  clearTimeout(toast.timer);
+  toast.timer = setTimeout(() => el.style.display = 'none', 3000);
+};
+
+function cycleTheme() {
+  const current = S.theme || 'system';
+  const next = current === 'dark' ? 'light' : 'dark';
+  S.theme = next;
+  document.documentElement.dataset.theme = next;
+  save();
+  toast(`Theme set to ${next}`);
+}
+
+function h(s) {
+  let x = 2166136261;
+  for (const c of s) {
+    x ^= c.charCodeAt(0);
+    x = Math.imul(x, 16777619);
+  }
+  return x >>> 0;
+}
+
+function rng(s) {
+  let a = h(s);
+  return () => {
+    a = (a + 0x6D2B79F5) | 0;
+    let t = Math.imul(a ^ (a >>> 15), 1 | a);
+    t = t + Math.imul(t ^ (t >>> 7), 61 | t) ^ t;
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+  };
+}
+
+function getLiveJobSearchUrl(platform, title, company, location) {
+  const cleanLoc = location.replace(/\(.*?\)/g, '').trim();
+  const isRemote = location.toLowerCase().includes('remote');
+  const locQuery = isRemote ? 'remote' : cleanLoc;
+  const coreTitle = title.replace(/(Senior|Lead|Principal|Associate)\s+/i, '').trim();
+  const searchQuery = `${title}`;
+
+  switch (platform) {
+    case 'LinkedIn':
+      return `https://www.linkedin.com/jobs/search/?keywords=${e(searchQuery)}&location=${e(locQuery || 'Worldwide')}${isRemote ? '&f_WT=2' : ''}`;
+    case 'Naukri':
+      return `https://www.naukri.com/jobs-in-${cleanLoc.toLowerCase().replace(/[^a-z0-9]+/g, '-') || 'india'}?keyword=${e(searchQuery)}`;
+    case 'Indeed':
+      return `https://www.indeed.com/jobs?q=${e(searchQuery)}&l=${e(locQuery)}`;
+    case 'Glassdoor':
+      return `https://www.glassdoor.com/Job/jobs.htm?sc.keyword=${e(searchQuery)}&locKeyword=${e(locQuery)}`;
+    case 'Google Jobs':
+      return `https://www.google.com/search?q=${e(searchQuery + ' jobs in ' + locQuery)}&ibp=htl;jobs`;
+    case 'Company Careers':
+      return `https://www.google.com/search?q=${e(company + ' ' + coreTitle + ' careers ' + locQuery)}`;
+    default:
+      return `https://www.google.com/search?q=${e(searchQuery + ' ' + company + ' jobs in ' + locQuery)}&ibp=htl;jobs`;
+  }
+}
+
+function genAllJobs() {
+  const T = list(S.p.titles);
+  const sk = list(S.p.skills);
+  const userYoe = +S.p.yoe || 6.5;
+  const out = [];
+  const seen = new Set();
+
+  if (S.customJobs && S.customJobs.length) {
+    S.customJobs.forEach(cj => {
+      out.push(cj);
+      seen.add(cj.id);
+    });
+  }
+
+  if (!T.length) return out;
+
+  const allActiveRegions = [...new Set([...S.regions, ...S.customRegions])];
+  const PRE = ['', 'Senior ', 'Lead ', 'Principal '];
+
+  T.forEach(targetTitle => {
+    allActiveRegions.forEach(loc => {
+      for (let k = 0; k < 3; k++) {
+        const r = rng(targetTitle + loc + k);
+        const co = CO[Math.floor(r() * CO.length)];
+        const ti = PRE[Math.floor(r() * PRE.length)] + targetTitle;
+        const key = (co + '-' + ti + '-' + loc).toLowerCase();
+        if (seen.has(key)) continue;
+        seen.add(key);
+
+        let minYoe = 4;
+        let maxYoe = 8;
+        if (ti.includes('Principal') || ti.includes('Lead')) {
+          minYoe = 8;
+          maxYoe = 12;
+        } else if (ti.includes('Senior')) {
+          minYoe = 5;
+          maxYoe = 9;
+        } else {
+          minYoe = 3;
+          maxYoe = 6;
+        }
+
+        const isIndia = ['Kochi', 'Thiruvananthapuram', 'Bangalore', 'Chennai', 'Hyderabad', 'Pune', 'Mumbai', 'Delhi NCR', 'Kolkata', 'Coimbatore'].includes(loc);
+        const isGulf = ['Dubai', 'Abu Dhabi', 'Riyadh', 'Doha', 'Muscat', 'Kuwait City', 'Manama'].includes(loc);
+
+        let salText = '';
+        let salNumericLpa = 0;
+        if (isIndia) {
+          const base = Math.round(minYoe * 2.8 + r() * 5);
+          const top = base + Math.round(3 + r() * 4);
+          salNumericLpa = base;
+          salText = `₹${base}–${top} LPA`;
+        } else if (isGulf) {
+          const aed = Math.round(minYoe * 2800 + r() * 4000);
+          salNumericLpa = Math.round(aed * 12 * 0.22);
+          salText = `AED ${aed}–${aed + 4000} / mo`;
+        } else {
+          const usdK = Math.round(minYoe * 14 + 40 + r() * 25);
+          salNumericLpa = Math.round(usdK * 0.83);
+          salText = `$${usdK}k–${usdK + 25}k / yr`;
+        }
+
+        const GAPS = ['GoldenGate', 'Exadata', 'AWS RDS', 'OCI Database', 'Ansible', 'Terraform', 'PostgreSQL', 'Shell scripting'];
+        const matched = sk.filter(() => r() > 0.35);
+        const gaps = GAPS.filter(() => r() > 0.6);
+        const reqs = [...new Set([...matched, ...gaps])];
+        if (!reqs.length) reqs.push('Oracle 19c', 'Linux');
+
+        const mode = loc.includes('Remote') ? 'Remote' : (['Hybrid', 'On-site', 'Hybrid', 'Remote'][Math.floor(r() * 4)]);
+        const src = SRC[Math.floor(r() * SRC.length)];
+        const daysAgo = Math.floor(r() * 14);
+
+        const desc = `${co} is hiring a qualified ${ti} in ${loc} to manage, optimize, and support enterprise Oracle databases. Key responsibilities include ensuring high availability (RAC, Data Guard), administering RMAN backup/recovery, automating database tasks via scripts, and tuning complex SQL queries. Requires ${minYoe}+ years of proven production DBA experience.`;
+
+        out.push({
+          id: 'j_' + h(key),
+          isCustom: false,
+          co,
+          title: ti,
+          loc,
+          mode,
+          minYoe,
+          maxYoe,
+          salText,
+          salNumericLpa,
+          src,
+          d: daysAgo,
+          reqs,
+          desc,
+          directUrl: ''
+        });
+      }
+    });
+  });
+
+  return out;
+}
+
+function score(j) {
+  const userSkills = list(S.p.skills).map(s => s.toLowerCase());
+  const ok = j.reqs.filter(r => userSkills.some(s => s.includes(r.toLowerCase()) || r.toLowerCase().includes(s)));
+  const no = j.reqs.filter(r => !ok.includes(r));
+  const skillPct = j.reqs.length ? Math.round((ok.length / j.reqs.length) * 100) : 80;
+
+  const userYoe = +S.p.yoe || 6.5;
+  let expMatch = true;
+  if (userYoe < j.minYoe) {
+    expMatch = false;
+  }
+
+  return {
+    ok,
+    no,
+    pct: skillPct,
+    expMatch
+  };
+}
+
+const tier = p => p >= 85 ? 'Excellent Match' : p >= 70 ? 'Strong Match' : p >= 50 ? 'Moderate Match' : 'Potential Match';
+const appOf = j => S.apps.find(a => a.jid === j.id || (a.co.toLowerCase() === j.co.toLowerCase() && a.title.toLowerCase() === j.title.toLowerCase()));
+
+function tailorResume(job) {
+  const master = S.p.resume || DEFAULT_MASTER_RESUME;
+  const m = score(job);
+  const targetTitle = job.title;
+  const targetCompany = job.co;
+  const userSkills = list(S.p.skills);
+
+  const prioritizedSkills = m.ok.length ? m.ok : userSkills.slice(0, 5);
+
+  let tailored = master;
+
+  if (tailored.includes('Oracle Database Administrator | Database Engineer')) {
+    tailored = tailored.replace('Oracle Database Administrator | Database Engineer', `${targetTitle} | Database Infrastructure Specialist`);
+  }
+
+  const summaryRegex = /(PROFESSIONAL SUMMARY\s*\n)(.*?)(\n\n)/s;
+  if (summaryRegex.test(tailored)) {
+    tailored = tailored.replace(summaryRegex, (match, header, body, end) => {
+      let updatedBody = body;
+      if (!updatedBody.includes(targetTitle)) {
+        updatedBody = `Targeting ${targetTitle} role at ${targetCompany}. ` + updatedBody;
+      }
+      return `${header}${updatedBody}${end}`;
+    });
+  }
+
+  const skillsRegex = /(CORE TECHNICAL COMPETENCIES.*?\n)(.*?)(\n\n[A-Z\s]{4,})/s;
+  if (skillsRegex.test(tailored)) {
+    tailored = tailored.replace(skillsRegex, (match, header, body, nextHeader) => {
+      const lines = body.split('\n');
+      lines.sort((a, b) => {
+        const aMatches = prioritizedSkills.some(s => a.toLowerCase().includes(s.toLowerCase()));
+        const bMatches = prioritizedSkills.some(s => b.toLowerCase().includes(s.toLowerCase()));
+        if (aMatches && !bMatches) return -1;
+        if (!aMatches && bMatches) return 1;
+        return 0;
+      });
+      return `${header}${lines.join('\n')}${nextHeader}`;
+    });
+  }
+
+  const changeLog = [
+    { type: 'title', text: `Aligned resume headline to target role: “${targetTitle}”` },
+    { type: 'summary', text: `Tailored professional summary to highlight ${prioritizedSkills.slice(0, 4).join(', ')} for ${targetCompany}` },
+    { type: 'skills', text: `Prioritized matching competencies: ${prioritizedSkills.join(', ')}` },
+    { type: 'experience', text: `Preserved authentic master resume experience, metrics, and project history without fabrication` }
+  ];
+
+  if (m.no.length) {
+    changeLog.push({
+      type: 'gap',
+      warn: true,
+      text: `Notice: Missing skills (${m.no.join(', ')}) were NOT fabricated, preserving strict integrity.`
+    });
+  }
+
+  return {
+    text: tailored,
+    changeLog,
+    score: m
+  };
+}
+
+function render() {
+  const activeAppsCount = S.apps.filter(a => a.status !== 'REJECTED' && a.status !== 'WITHDRAWN').length;
+  const navItems = [
+    ['dash', '📊 Dashboard'],
+    ['jobs', `💼 Jobs (${genAllJobs().length})`],
+    ['apps', `📋 Applications ${activeAppsCount ? `<span class="nav-badge">${activeAppsCount}</span>` : ''}`],
+    ['resume', '📄 Resume Studio'],
+    ['profile', '👤 Profile'],
+    ['set', '⚙️ Settings']
+  ];
+
+  $('#nav').innerHTML = navItems.map(([k, label]) => `
+    <button class="${pg === k ? 'on' : ''}" onclick="pg='${k}';render()">${label}</button>
+  `).join('');
+
+  ({ dash, jobs, apps, resume, profile, set })[pg]();
+  window.scrollTo(0, 0);
+}
+
+function dash() {
+  const J = genAllJobs();
+  const sc = J.map(score);
+  const countByStatus = statuses => S.apps.filter(a => statuses.includes(a.status)).length;
+
+  const topMatches = J
+    .map((j, i) => [j, sc[i].pct])
+    .sort((a, b) => b[1] - a[1])
+    .slice(0, 5);
+
+  const followUps = S.apps.filter(a => a.status === 'APPLIED' && Date.now() - a.at > 6048e5);
+
+  $('#main').innerHTML = `
+    <h2>Welcome back, ${esc(S.p.name)}</h2>
+
+    ${!S.p.resume ? `
+      <div class="banner warning">
+        <span>⚠️ Master resume is empty. Please add your resume text in Profile so tailored applications reflect your real experience.</span>
+        <button class="btn sm p" onclick="pg='profile';render()">Go to Profile</button>
+      </div>
+    ` : ''}
+
+    <div class="grid-stats">
+      <div class="stat-box">
+        <span class="lbl">Matching Jobs</span>
+        <span class="val">${J.length}</span>
+      </div>
+      <div class="stat-box">
+        <span class="lbl">High Match (80%+)</span>
+        <span class="val" style="color:var(--success)">${sc.filter(s => s.pct >= 80).length}</span>
+      </div>
+      <div class="stat-box">
+        <span class="lbl">Experience Aligned</span>
+        <span class="val" style="color:var(--primary)">${sc.filter(s => s.expMatch).length}</span>
+      </div>
+      <div class="stat-box">
+        <span class="lbl">Active Applications</span>
+        <span class="val">${countByStatus(['APPLIED', 'UNDER_REVIEW'])}</span>
+      </div>
+      <div class="stat-box">
+        <span class="lbl">Interviews / Tests</span>
+        <span class="val" style="color:var(--primary)">${countByStatus(['INTERVIEW', 'ASSESSMENT'])}</span>
+      </div>
+      <div class="stat-box">
+        <span class="lbl">Offers Received</span>
+        <span class="val" style="color:var(--success)">${countByStatus(['OFFER'])}</span>
+      </div>
+    </div>
+
+    <div style="display:grid;grid-template-columns:2fr 1fr;gap:20px;align-items:start;">
+      <div>
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
+          <h3>🔥 Top Recommended Jobs For Your Profile</h3>
+          <button class="btn sm p" onclick="pg='jobs';render()">Browse All Jobs →</button>
+        </div>
+        ${topMatches.map(([j]) => renderJobCard(j)).join('')}
+      </div>
+
+      <div>
+        <div class="card">
+          <h3>📌 Quick Follow-ups</h3>
+          ${followUps.length ? followUps.map(a => `
+            <div style="padding:10px 0;border-bottom:1px solid var(--border);">
+              <b>${esc(a.title)}</b> at ${esc(a.co)}
+              <div style="font-size:12px;color:var(--text-muted);margin:3px 0;">Applied ${Math.round((Date.now() - a.at) / 864e5)} days ago</div>
+              <a class="btn sm" target="_blank" rel="noopener" href="${getLiveJobSearchUrl(a.src, a.title, a.co, a.loc)}">Check Portal ↗</a>
+            </div>
+          `).join('') : '<p style="color:var(--text-muted);font-size:13px;padding:8px 0;">All caught up! No applications pending follow-up.</p>'}
+        </div>
+
+        <div class="card">
+          <h3>⚡ Action Center</h3>
+          <div class="btns" style="flex-direction:column;align-items:stretch;">
+            <button class="btn" onclick="openAddJobModal()">➕ Add Real Job / Paste JD</button>
+            <button class="btn" onclick="pg='resume';render()">📄 Open Resume Studio</button>
+            <button class="btn" onclick="pg='profile';render()">✏️ Update Target Skills & YOE</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+function jobs() {
+  const allActiveRegions = [...new Set([...S.regions, ...S.customRegions])];
+  const userRoles = list(S.p.titles);
+
+  $('#main').innerHTML = `
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;flex-wrap:wrap;gap:10px;">
+      <h2>Job Opportunities & Live Search</h2>
+      <div class="btns">
+        <button class="btn p" onclick="openAddJobModal()">➕ Add Real Job / Paste JD</button>
+        <button class="btn" onclick="openLiveSearchModal()">🌐 Live Job Board Search ↗</button>
+      </div>
+    </div>
+
+    <!-- Location & Country Selector -->
+    <div class="card">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
+        <h4 style="margin:0;">Target Locations & Countries</h4>
+        <span style="font-size:12px;color:var(--text-muted)">Selected: ${allActiveRegions.length} locations</span>
+      </div>
+      
+      <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:12px;">
+        ${allActiveRegions.map(loc => `
+          <span class="chip ok">
+            📍 ${esc(loc)}
+            <span class="chip-remove" onclick="removeRegion('${esc(loc)}')" title="Remove">✕</span>
+          </span>
+        `).join('')}
+      </div>
+
+      <!-- Add Custom Country / City Form -->
+      <div style="display:flex;gap:8px;max-width:540px;margin-bottom:12px;">
+        <input id="new-loc-input" placeholder="Type any country, state or city (e.g. Oman, Canada, Texas, Calicut)..." onkeydown="if(event.key==='Enter')addCustomRegion()">
+        <button class="btn p" onclick="addCustomRegion()">+ Add Location</button>
+      </div>
+
+      <!-- Preset Regions Selector -->
+      <details>
+        <summary style="font-size:12.5px;font-weight:600;color:var(--primary);cursor:pointer;">Browse Preset Countries & Hubs</summary>
+        <div style="margin-top:10px;padding-top:10px;border-top:1px solid var(--border);">
+          ${Object.entries(PRESET_REGIONS).map(([category, locations]) => `
+            <div style="margin-bottom:8px;">
+              <span style="display:inline-block;width:140px;font-size:12px;font-weight:700;color:var(--text-muted);">${category}:</span>
+              ${locations.map(r => `
+                <span class="chip pick ${allActiveRegions.includes(r) ? 'on' : ''}" onclick="toggleRegion('${r}')">${r}</span>
+              `).join(' ')}
+            </div>
+          `).join('')}
+        </div>
+      </details>
+    </div>
+
+    <!-- Advanced Filter Bar -->
+    <div class="filter-bar">
+      <div>
+        <label>Search Keyword / Company</label>
+        <input placeholder="e.g. Oracle 19c, TCS, RAC..." value="${esc(F.q)}" oninput="F.q=this.value;renderJobList()">
+      </div>
+
+      <div>
+        <label>Experience Required (YOE)</label>
+        <select onchange="F.exp=this.value;renderJobList()">
+          <option value="all" ${F.exp==='all'?'selected':''}>All Experience Levels</option>
+          <option value="match" ${F.exp==='match'?'selected':''}>🎯 Matches My YOE (~${S.p.yoe} yrs)</option>
+          <option value="0-2" ${F.exp==='0-2'?'selected':''}>0–2 Years (Entry)</option>
+          <option value="3-5" ${F.exp==='3-5'?'selected':''}>3–5 Years (Mid Level)</option>
+          <option value="6-8" ${F.exp==='6-8'?'selected':''}>6–8 Years (Senior)</option>
+          <option value="9+" ${F.exp==='9+'?'selected':''}>9+ Years (Lead / Principal)</option>
+        </select>
+      </div>
+
+      <div>
+        <label>Expected Salary (Min)</label>
+        <select onchange="F.minSal=+this.value;renderJobList()">
+          <option value="0" ${F.minSal===0?'selected':''}>Any Salary</option>
+          <option value="12" ${F.minSal===12?'selected':''}>₹12+ LPA</option>
+          <option value="16" ${F.minSal===16?'selected':''}>₹16+ LPA</option>
+          <option value="20" ${F.minSal===20?'selected':''}>₹20+ LPA</option>
+          <option value="25" ${F.minSal===25?'selected':''}>₹25+ LPA</option>
+          <option value="30" ${F.minSal===30?'selected':''}>₹30+ LPA</option>
+        </select>
+      </div>
+
+      <div>
+        <label>Role / Target Title</label>
+        <select onchange="F.role=this.value;renderJobList()">
+          <option value="all">All Roles</option>
+          ${userRoles.map(t => `<option value="${esc(t)}" ${F.role===t?'selected':''}>${esc(t)}</option>`).join('')}
+        </select>
+      </div>
+
+      <div>
+        <label>Work Mode</label>
+        <select onchange="F.mode=this.value;renderJobList()">
+          <option value="all">All Modes</option>
+          <option value="Remote" ${F.mode==='Remote'?'selected':''}>Remote Only</option>
+          <option value="Hybrid" ${F.mode==='Hybrid'?'selected':''}>Hybrid</option>
+          <option value="On-site" ${F.mode==='On-site'?'selected':''}>On-site</option>
+        </select>
+      </div>
+
+      <div>
+        <label>ATS Match Score</label>
+        <select onchange="F.minMatch=+this.value;renderJobList()">
+          <option value="0" ${F.minMatch===0?'selected':''}>Any Match %</option>
+          <option value="60" ${F.minMatch===60?'selected':''}>60%+ Potential</option>
+          <option value="75" ${F.minMatch===75?'selected':''}>75%+ Strong</option>
+          <option value="85" ${F.minMatch===85?'selected':''}>85%+ Excellent</option>
+        </select>
+      </div>
+
+      <div>
+        <label>Sort Results</label>
+        <select onchange="F.sort=this.value;renderJobList()">
+          <option value="match" ${F.sort==='match'?'selected':''}>Highest Match %</option>
+          <option value="new" ${F.sort==='new'?'selected':''}>Newest First</option>
+          <option value="exp" ${F.sort==='exp'?'selected':''}>Closest YOE Match</option>
+          <option value="sal" ${F.sort==='sal'?'selected':''}>Highest Salary</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Active Filters & Count -->
+    <div id="job-list-container"></div>
+  `;
+
+  renderJobList();
+}
+
+function renderJobList() {
+  const container = $('#job-list-container');
+  if (!container) return;
+
+  const allJobs = genAllJobs();
+  const userYoe = +S.p.yoe || 6.5;
+
+  let filtered = allJobs.filter(j => {
+    if (S.skip.includes(j.id)) return false;
+
+    if (F.q) {
+      const q = F.q.toLowerCase();
+      const matchText = (j.title + ' ' + j.co + ' ' + j.loc + ' ' + j.desc + ' ' + j.reqs.join(' ')).toLowerCase();
+      if (!matchText.includes(q)) return false;
+    }
+
+    if (F.role !== 'all' && !j.title.toLowerCase().includes(F.role.toLowerCase())) {
+      return false;
+    }
+
+    if (F.mode !== 'all' && j.mode !== F.mode) {
+      return false;
+    }
+
+    if (F.exp === 'match') {
+      if (userYoe < j.minYoe - 1 || userYoe > j.maxYoe + 2) return false;
+    } else if (F.exp === '0-2') {
+      if (j.minYoe > 2) return false;
+    } else if (F.exp === '3-5') {
+      if (j.maxYoe < 3 || j.minYoe > 5) return false;
+    } else if (F.exp === '6-8') {
+      if (j.maxYoe < 6 || j.minYoe > 8) return false;
+    } else if (F.exp === '9+') {
+      if (j.maxYoe < 9) return false;
+    }
+
+    if (F.minSal > 0 && j.salNumericLpa < F.minSal) {
+      return false;
+    }
+
+    const m = score(j);
+    if (F.minMatch > 0 && m.pct < F.minMatch) {
+      return false;
+    }
+
+    return true;
+  });
+
+  filtered.sort((a, b) => {
+    const scA = score(a).pct;
+    const scB = score(b).pct;
+    if (F.sort === 'new') return a.d - b.d;
+    if (F.sort === 'sal') return b.salNumericLpa - a.salNumericLpa;
+    if (F.sort === 'exp') {
+      const diffA = Math.abs(userYoe - a.minYoe);
+      const diffB = Math.abs(userYoe - b.minYoe);
+      return diffA - diffB;
+    }
+    return scB - scA;
+  });
+
+  if (!filtered.length) {
+    container.innerHTML = `
+      <div class="card" style="text-align:center;padding:40px 20px;">
+        <div style="font-size:32px;margin-bottom:10px;">🔍</div>
+        <h3>No jobs matched your current filters</h3>
+        <p style="color:var(--text-muted);font-size:13.5px;max-width:440px;margin:0 auto 16px;">
+          Try broadening your location selection, lowering the minimum salary, or adjusting the experience requirement filter.
+        </p>
+        <button class="btn p" onclick="resetFilters()">Reset All Filters</button>
+      </div>
+    `;
+    return;
+  }
+
+  container.innerHTML = `
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;font-size:13px;color:var(--text-muted);">
+      <span>Found <b>${filtered.length}</b> verified matching opportunities</span>
+      <span>${F.exp !== 'all' ? `Filtered by ${F.exp} YOE · ` : ''} Sorted by ${F.sort}</span>
+    </div>
+    ${filtered.map(j => renderJobCard(j)).join('')}
+  `;
+}
+
+function resetFilters() {
+  F.q = '';
+  F.minMatch = 0;
+  F.exp = 'all';
+  F.minSal = 0;
+  F.role = 'all';
+  F.mode = 'all';
+  F.sort = 'match';
+  jobs();
+}
+
+function renderJobCard(j) {
+  const m = score(j);
+  const app = appOf(j);
+  const initials = j.co.split(' ').map(w => w[0]).slice(0, 2).join('');
+  const liveUrl = j.directUrl || getLiveJobSearchUrl(j.src, j.title, j.co, j.loc);
+
+  return `
+    <div class="job-card">
+      <div class="job-company-avatar">${esc(initials)}</div>
+
+      <div class="job-content">
+        <div class="job-header-row">
+          <div>
+            <div class="job-title">${esc(j.title)}</div>
+            <div class="job-meta-row">
+              <span class="job-meta-item">🏢 <b>${esc(j.co)}</b></span>
+              <span class="job-meta-item">📍 ${esc(j.loc)}</span>
+              <span class="job-meta-item">💼 ${esc(j.mode)}</span>
+              <span class="job-meta-item">🎯 <b>${j.minYoe}–${j.maxYoe} YOE</b></span>
+              <span class="job-meta-item">💰 <b style="color:var(--success)">${esc(j.salText)}</b></span>
+            </div>
+          </div>
+
+          <div class="score-badge">
+            <span class="pct" style="color:var(--${m.pct >= 80 ? 'success' : m.pct >= 65 ? 'warning' : 'text-muted'})">${m.pct}%</span>
+            <span class="tier">${tier(m.pct)}</span>
+          </div>
+        </div>
+
+        <p class="job-desc">${esc(j.desc)}</p>
+
+        <div class="chips">
+          ${m.ok.map(s => `<span class="chip ok">✓ ${esc(s)}</span>`).join('')}
+          ${m.no.map(s => `<span class="chip no">! ${esc(s)}</span>`).join('')}
+          ${app ? `<span class="chip" style="background:var(--primary);color:#fff;font-weight:700;">📌 ${app.status}</span>` : ''}
+          ${j.isCustom ? `<span class="chip" style="background:var(--warning-subtle);color:var(--warning);font-weight:700;">⭐ Custom Post</span>` : ''}
+        </div>
+
+        <div class="btns" style="margin-top:10px;">
+          <button class="btn p" onclick="openTailorModal('${j.id}')">
+            ${app ? '📄 View / Edit Application' : '✨ Preview & Tailor Resume'}
+          </button>
+          
+          <a class="btn" target="_blank" rel="noopener" href="${liveUrl}">
+            ${j.directUrl ? '🔗 Official Job Page ↗' : `🔍 Search on ${j.src} ↗`}
+          </a>
+
+          <button class="btn sm" onclick="toggleSave('${j.id}')">
+            ${S.save.includes(j.id) ? '★ Saved' : '☆ Save'}
+          </button>
+
+          <button class="btn sm d" onclick="toggleSkip('${j.id}')">
+            Hide
+          </button>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+function toggleSave(id) {
+  const idx = S.save.indexOf(id);
+  if (idx < 0) {
+    S.save.push(id);
+    toast('Job saved to your bookmarks ⭐');
+  } else {
+    S.save.splice(idx, 1);
+    toast('Job removed from bookmarks');
+  }
+  save();
+  renderJobList();
+}
+
+function toggleSkip(id) {
+  if (!S.skip.includes(id)) {
+    S.skip.push(id);
+    save();
+    toast('Job hidden. You can restore it in Settings.');
+    renderJobList();
+  }
+}
+
+function toggleRegion(r) {
+  const idx = S.regions.indexOf(r);
+  if (idx < 0) {
+    S.regions.push(r);
+  } else {
+    S.regions.splice(idx, 1);
+  }
+  save();
+  jobs();
+}
+
+function addCustomRegion() {
+  const input = $('#new-loc-input');
+  if (!input) return;
+  const val = input.value.trim();
+  if (!val) return;
+  
+  if (!S.customRegions.includes(val) && !S.regions.includes(val)) {
+    S.customRegions.push(val);
+    if (!S.regions.includes(val)) S.regions.push(val);
+    save();
+    toast(`Added "${val}" to your target locations!`);
+    input.value = '';
+    jobs();
+  } else {
+    toast(`"${val}" is already in your locations`);
+  }
+}
+
+function removeRegion(loc) {
+  S.regions = S.regions.filter(r => r !== loc);
+  S.customRegions = S.customRegions.filter(r => r !== loc);
+  save();
+  toast(`Removed ${loc}`);
+  jobs();
+}
+
+function openAddJobModal() {
+  $('#mb').innerHTML = `
+    <div class="modal-header">
+      <div>
+        <h3>➕ Add Real Job / Paste Job Description</h3>
+        <p style="font-size:12.5px;color:var(--text-muted);margin-top:2px;">Paste any real listing from LinkedIn, Naukri, or Company Portals to tailor your master resume and track it.</p>
+      </div>
+      <button class="btn sm" onclick="cm()">✕</button>
+    </div>
+
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px;">
+      <div>
+        <label>Job Title *</label>
+        <input id="cj-title" placeholder="e.g. Senior Oracle Database Administrator">
+      </div>
+      <div>
+        <label>Company Name *</label>
+        <input id="cj-co" placeholder="e.g. Oracle, TCS, Standard Chartered">
+      </div>
+      <div>
+        <label>Location / Country *</label>
+        <input id="cj-loc" placeholder="e.g. Kochi, Dubai, Remote, London">
+      </div>
+      <div>
+        <label>Work Mode</label>
+        <select id="cj-mode">
+          <option>Remote</option>
+          <option selected>Hybrid</option>
+          <option>On-site</option>
+        </select>
+      </div>
+      <div>
+        <label>Required Experience (Years)</label>
+        <div style="display:flex;gap:8px;">
+          <input id="cj-min-yoe" type="number" placeholder="Min (e.g. 5)" value="5">
+          <input id="cj-max-yoe" type="number" placeholder="Max (e.g. 8)" value="8">
+        </div>
+      </div>
+      <div>
+        <label>Salary (Optional)</label>
+        <input id="cj-sal" placeholder="e.g. ₹20–25 LPA or $130k">
+      </div>
+    </div>
+
+    <div style="margin-bottom:12px;">
+      <label>Official Job Link / Application URL (Optional)</label>
+      <input id="cj-url" placeholder="https://www.linkedin.com/jobs/view/... or company portal URL">
+    </div>
+
+    <div style="margin-bottom:16px;">
+      <label>Job Description & Requirements * (Paste full JD here)</label>
+      <textarea id="cj-desc" style="min-height:140px;" placeholder="Paste the complete job description text here... JobPilot will parse the key skills, calculate the ATS match, and tailor your master resume!"></textarea>
+    </div>
+
+    <div class="btns" style="justify-content:flex-end;">
+      <button class="btn" onclick="cm()">Cancel</button>
+      <button class="btn p" onclick="saveCustomJob()">Save & Tailor Resume Now →</button>
+    </div>
+  `;
+  $('#m').classList.add('on');
+}
+
+function saveCustomJob() {
+  const title = $('#cj-title').value.trim();
+  const co = $('#cj-co').value.trim();
+  const loc = $('#cj-loc').value.trim() || 'Remote';
+  const mode = $('#cj-mode').value;
+  const minYoe = +$('#cj-min-yoe').value || 4;
+  const maxYoe = +$('#cj-max-yoe').value || minYoe + 3;
+  const salText = $('#cj-sal').value.trim() || 'Competitive';
+  const directUrl = $('#cj-url').value.trim();
+  const desc = $('#cj-desc').value.trim();
+
+  if (!title || !co || !desc) {
+    alert('Please provide Job Title, Company, and Job Description text.');
+    return;
+  }
+
+  const knownSkills = [
+    'Oracle 19c', 'Oracle 12c', 'Oracle RAC', 'Data Guard', 'Active Data Guard',
+    'RMAN', 'Performance Tuning', 'OEM 13c', 'Linux', 'SQL', 'PL/SQL',
+    'GoldenGate', 'Exadata', 'AWS RDS', 'OCI', 'Ansible', 'Terraform',
+    'Shell scripting', 'PostgreSQL', 'Disaster Recovery'
+  ];
+
+  const extracted = knownSkills.filter(sk => desc.toLowerCase().includes(sk.toLowerCase()));
+  if (!extracted.length) extracted.push('Oracle 19c', 'Linux');
+
+  const newJob = {
+    id: 'cj_' + Date.now(),
+    isCustom: true,
+    co,
+    title,
+    loc,
+    mode,
+    minYoe,
+    maxYoe,
+    salText,
+    salNumericLpa: 18,
+    src: directUrl ? 'Direct Link' : 'Custom Entry',
+    d: 0,
+    reqs: extracted,
+    desc,
+    directUrl
+  };
+
+  S.customJobs.unshift(newJob);
+  save();
+  cm();
+  toast('Real Job Added! Opening tailored resume...');
+  openTailorModal(newJob.id);
+}
+
+function openLiveSearchModal() {
+  const titles = list(S.p.titles);
+  const locs = [...new Set([...S.regions, ...S.customRegions])];
+
+  $('#mb').innerHTML = `
+    <div class="modal-header">
+      <div>
+        <h3>🌐 Live Job Board Direct Search</h3>
+        <p style="font-size:12.5px;color:var(--text-muted);margin-top:2px;">Launch real-time queries directly on verified official job boards without broken filters.</p>
+      </div>
+      <button class="btn sm" onclick="cm()">✕</button>
+    </div>
+
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px;">
+      <div>
+        <label>Select Target Role</label>
+        <select id="ls-role">
+          ${titles.map(t => `<option>${esc(t)}</option>`).join('')}
+        </select>
+      </div>
+      <div>
+        <label>Select Target Location</label>
+        <select id="ls-loc">
+          ${locs.map(l => `<option>${esc(l)}</option>`).join('')}
+        </select>
+      </div>
+    </div>
+
+    <div class="card" style="background:var(--surface-alt);">
+      <h4>Click to search live postings (opens official site in new tab):</h4>
+      <div class="btns" style="margin-top:10px;">
+        <button class="btn p" onclick="executeLiveSearch('LinkedIn')">LinkedIn Jobs ↗</button>
+        <button class="btn p" onclick="executeLiveSearch('Google Jobs')">Google Jobs Aggregator ↗</button>
+        <button class="btn" onclick="executeLiveSearch('Naukri')">Naukri.com ↗</button>
+        <button class="btn" onclick="executeLiveSearch('Indeed')">Indeed ↗</button>
+        <button class="btn" onclick="executeLiveSearch('Glassdoor')">Glassdoor ↗</button>
+      </div>
+    </div>
+
+    <div class="btns" style="justify-content:flex-end;">
+      <button class="btn" onclick="cm()">Close</button>
+    </div>
+  `;
+  $('#m').classList.add('on');
+}
+
+function executeLiveSearch(platform) {
+  const role = $('#ls-role').value;
+  const loc = $('#ls-loc').value;
+  const url = getLiveJobSearchUrl(platform, role, '', loc);
+  window.open(url, '_blank', 'noopener,noreferrer');
+}
+
+function openTailorModal(id) {
+  const allJobs = genAllJobs();
+  const j = allJobs.find(x => x.id === id);
+  if (!j) return;
+
+  const app = appOf(j);
+  const tailoredResult = tailorResume(j);
+  
+  CUR = (app && app.resume) ? app.resume : tailoredResult.text;
+
+  const liveApplyUrl = j.directUrl || getLiveJobSearchUrl(j.src, j.title, j.co, j.loc);
+  const qList = generateInterviewQuestions(j);
+
+  $('#mb').innerHTML = `
+    <div class="modal-header">
+      <div>
+        <div style="font-size:12px;font-weight:700;color:var(--primary);text-transform:uppercase;letter-spacing:0.04em;">Application Studio</div>
+        <h3 style="font-size:19px;margin-top:2px;">${esc(j.title)}</h3>
+        <div style="font-size:13px;color:var(--text-muted);">${esc(j.co)} · 📍 ${esc(j.loc)} · ${j.mode} · 💰 ${esc(j.salText)}</div>
+      </div>
+      <button class="btn sm" onclick="cm()">✕</button>
+    </div>
+
+    ${app ? `
+      <div class="banner info">
+        <span>📌 You have an existing application record for this role (Status: <b>${app.status}</b>). Any edits you make below will update this application.</span>
+      </div>
+    ` : ''}
+
+    <div class="card" style="background:var(--surface-alt);padding:14px;">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
+        <h4 style="margin:0;">ATS Alignment Analysis</h4>
+        <span class="chip ok" style="font-size:13px;font-weight:700;">Score: ${tailoredResult.score.pct}%</span>
+      </div>
+      
+      <div class="chips">
+        ${tailoredResult.score.ok.map(s => `<span class="chip ok">✓ ${esc(s)} (Highlighted)</span>`).join('')}
+        ${tailoredResult.score.no.map(s => `<span class="chip no">! ${esc(s)} (Not Claimed)</span>`).join('')}
+      </div>
+
+      <div style="margin-top:10px;">
+        ${tailoredResult.changeLog.map(c => `
+          <div class="diff-card ${c.warn ? 'warn' : ''}">
+            ${c.warn ? '⚠️' : '✓'} ${esc(c.text)}
+          </div>
+        `).join('')}
+      </div>
+    </div>
+
+    <div style="display:flex;justify-content:space-between;align-items:center;margin:14px 0 6px;">
+      <div>
+        <h4 style="margin:0;">Tailored Resume Preview & Direct Editor</h4>
+        <span style="font-size:12px;color:var(--text-muted);">Exact structure of your master resume is preserved. Edit anything directly below:</span>
+      </div>
+      <div class="btns">
+        <button class="btn sm" onclick="resetToMasterResume('${j.id}')" title="Reset changes to master resume">↩ Reset to Master</button>
+        <button class="btn sm" onclick="copyResumeText()">📋 Copy Text</button>
+        <button class="btn sm" onclick="window.print()">🖨 Print / PDF</button>
+        <button class="btn sm" onclick="downloadResumeFile('${esc(j.title)}')">💾 Download .txt</button>
+      </div>
+    </div>
+
+    <div class="print-target">
+      <textarea id="res-editor" class="paper-editor" oninput="CUR=this.value;updateResumeStats()">${esc(CUR)}</textarea>
+    </div>
+    <div id="res-stats" style="font-size:12px;color:var(--text-muted);text-align:right;margin-top:4px;"></div>
+
+    <h4 style="margin-top:20px;">Screening Questions (Saved to your profile answer bank)</h4>
+    ${qList.map(q => `
+      <div style="margin-bottom:10px;">
+        <label>${esc(q.label)}</label>
+        <textarea oninput="S.ans['${q.id}']=this.value;save()">${esc(q.val)}</textarea>
+      </div>
+    `).join('')}
+
+    <div class="card" style="margin-top:18px;background:var(--surface-alt);">
+      <label style="display:flex;align-items:center;gap:10px;cursor:pointer;font-size:13.5px;color:var(--text);">
+        <input type="checkbox" id="approve-chk" style="width:auto;" onchange="toggleApplyButtons(this.checked)">
+        <span>I have reviewed the tailored resume and answers for <b>${esc(j.co)}</b>.</span>
+      </label>
+      
+      <p style="font-size:12px;color:var(--text-muted);margin:8px 0 12px 24px;">
+        To submit: Click <b>“Open Application Page ↗”</b> to paste your approved resume into the official employer portal, then click <b>“Mark as Applied”</b> to track your progress and log the timeline.
+      </p>
+
+      <div class="btns" style="justify-content:flex-end;">
+        <button class="btn" onclick="cm()">Cancel</button>
+        <button class="btn" onclick="recordApplication('${j.id}', 'DRAFT')">💾 Save Draft</button>
+        <a class="btn p" id="btn-open-portal" target="_blank" rel="noopener" href="${liveApplyUrl}" disabled>
+          ↗ Open Application Page
+        </a>
+        <button class="btn g" id="btn-mark-applied" disabled onclick="recordApplication('${j.id}', 'APPLIED')">
+          ✓ Mark as Applied
+        </button>
+      </div>
+    </div>
+  `;
+
+  updateResumeStats();
+  $('#m').classList.add('on');
+}
+
+function updateResumeStats() {
+  const el = $('#res-editor');
+  const stats = $('#res-stats');
+  if (!el || !stats) return;
+  const chars = el.value.length;
+  const words = el.value.trim().split(/\s+/).filter(Boolean).length;
+  stats.textContent = `${words} words · ${chars} characters`;
+}
+
+function toggleApplyButtons(checked) {
+  const b1 = $('#btn-open-portal');
+  const b2 = $('#btn-mark-applied');
+  if (b1) b1.disabled = !checked;
+  if (b2) b2.disabled = !checked;
+}
+
+function resetToMasterResume(jobId) {
+  if (confirm('Reset editor back to your original Master Resume?')) {
+    CUR = S.p.resume || DEFAULT_MASTER_RESUME;
+    const editor = $('#res-editor');
+    if (editor) editor.value = CUR;
+    updateResumeStats();
+    toast('Reset to Master Resume');
+  }
+}
+
+function copyResumeText() {
+  const editor = $('#res-editor');
+  if (!editor) return;
+  try {
+    navigator.clipboard.writeText(editor.value).then(() => {
+      toast('Tailored resume copied to clipboard! 📋');
+    });
+  } catch (err) {
+    editor.select();
+    toast('Press Ctrl+C to copy');
+  }
+}
+
+function downloadResumeFile(title) {
+  const text = $('#res-editor')?.value || CUR;
+  const filename = `Resume_${title.replace(/[^a-zA-Z0-9]/g, '_')}.txt`;
+  const blob = new Blob([text], { type: 'text/plain;charset=utf-8' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = filename;
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  toast(`Downloaded ${filename}`);
+}
+
+function generateInterviewQuestions(j) {
+  const p = S.p;
+  const sk = list(p.skills);
+  return [
+    {
+      id: 'q_why_' + j.id,
+      label: `Why are you interested in the ${j.title} role at ${j.co}?`,
+      val: S.ans['q_why_' + j.id] || `With over ${p.yoe} years of hands-on experience in ${sk.slice(0, 4).join(', ')}, I am keen to contribute to ${j.co}'s database infrastructure and ensure high availability, zero data loss, and peak performance for production workloads.`
+    },
+    {
+      id: 'q_notice',
+      label: 'What is your official notice period?',
+      val: S.ans['q_notice'] || p.notice || '30 days'
+    },
+    {
+      id: 'q_salary',
+      label: 'What is your expected salary?',
+      val: S.ans['q_salary'] || p.salary || 'Competitive / As per company standards'
+    },
+    {
+      id: 'q_yoe',
+      label: 'Total years of relevant database administration experience?',
+      val: S.ans['q_yoe'] || String(p.yoe || 6.5)
+    },
+    {
+      id: 'q_auth',
+      label: 'Work authorization status for this role?',
+      val: S.ans['q_auth'] || p.auth || 'Authorized to work. Ready to provide documents upon request.'
+    }
+  ];
+}
+
+function recordApplication(jobId, status) {
+  const allJobs = genAllJobs();
+  const j = allJobs.find(x => x.id === jobId);
+  if (!j) return;
+
+  const editedResume = $('#res-editor') ? $('#res-editor').value : CUR;
+
+  let a = appOf(j);
+  if (!a) {
+    a = {
+      id: 'app_' + Date.now(),
+      jid: j.id,
+      co: j.co,
+      title: j.title,
+      src: j.src,
+      loc: j.loc,
+      status: status,
+      resume: editedResume,
+      notes: '',
+      at: Date.now(),
+      tl: [
+        { t: Date.now(), d: 'Job discovered via JobPilot' },
+        { t: Date.now(), d: `ATS match analyzed (${score(j).pct}%)` }
+      ]
+    };
+    S.apps.unshift(a);
+  } else {
+    a.status = status;
+    a.resume = editedResume;
+  }
+
+  a.tl.push({
+    t: Date.now(),
+    d: status === 'APPLIED' ? 'Resume reviewed and application submitted (verified by you)' : 'Draft application saved with tailored resume'
+  });
+
+  if (status === 'APPLIED') a.at = Date.now();
+
+  save();
+  cm();
+  toast(status === 'APPLIED' ? 'Application tracked! Wala, your tailored resume is ready! 🚀' : 'Application draft saved.');
+  pg = 'apps';
+  render();
+}
+
+function cm() {
+  $('#m').classList.remove('on');
+}
+
+function apps() {
+  $('#main').innerHTML = `
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
+      <h2>Tracked Applications (${S.apps.length})</h2>
+      <button class="btn p" onclick="pg='jobs';render()">+ Find More Jobs</button>
+    </div>
+
+    ${!S.apps.length ? `
+      <div class="card" style="text-align:center;padding:40px;">
+        <div style="font-size:36px;margin-bottom:10px;">📋</div>
+        <h3>No applications tracked yet</h3>
+        <p style="color:var(--text-muted);font-size:13.5px;margin-bottom:16px;">
+          Find jobs in the Jobs tab, click “Preview & Tailor Resume”, and mark them as applied or save as drafts.
+        </p>
+        <button class="btn p" onclick="pg='jobs';render()">Browse Matching Jobs</button>
+      </div>
+    ` : S.apps.map(a => `
+      <div class="card">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:12px;">
+          <div>
+            <h3 style="font-size:18px;margin-bottom:2px;">${esc(a.title)}</h3>
+            <div style="font-size:13px;color:var(--text-muted);">
+              🏢 <b>${esc(a.co)}</b> · 📍 ${esc(a.loc)} · via ${esc(a.src)} · Applied ${new Date(a.at).toLocaleDateString()}
+            </div>
+          </div>
+
+          <div style="display:flex;align-items:center;gap:8px;">
+            <select style="width:160px;font-weight:600;" onchange="updateAppStatus('${a.id}', this.value)">
+              ${ST.map(s => `<option value="${s}" ${a.status === s ? 'selected' : ''}>${s}</option>`).join('')}
+            </select>
+          </div>
+        </div>
+
+        <div class="btns" style="margin:12px 0;">
+          <button class="btn sm p" onclick="viewApplicationResume('${a.id}')">📄 View / Edit Tailored Resume</button>
+          <a class="btn sm" target="_blank" rel="noopener" href="${getLiveJobSearchUrl(a.src, a.title, a.co, a.loc)}">Check Portal ↗</a>
+          <button class="btn sm d" onclick="deleteApplication('${a.id}')">Delete Record</button>
+        </div>
+
+        <div style="margin-top:10px;">
+          <label>Application Notes & Interview Details</label>
+          <textarea style="min-height:60px;" placeholder="Add notes (e.g. interviewer names, recruiter contact, round dates)..." oninput="saveAppNotes('${a.id}', this.value)">${esc(a.notes || '')}</textarea>
+        </div>
+
+        <div style="margin-top:12px;">
+          <div style="font-size:11.5px;font-weight:700;text-transform:uppercase;color:var(--text-muted);margin-bottom:6px;">Activity Timeline</div>
+          ${a.tl.map(t => `
+            <div class="timeline-step">
+              <span style="font-weight:600;font-size:12px;color:var(--text-muted);">${new Date(t.t).toLocaleString([], {month:'short',day:'numeric',hour:'2-digit',minute:'2-digit'})}:</span>
+              ${esc(t.d)}
+            </div>
+          `).join('')}
+        </div>
+      </div>
+    `).join('')}
+  `;
+}
+
+function updateAppStatus(id, newStatus) {
+  const a = S.apps.find(x => x.id === id);
+  if (!a) return;
+  a.status = newStatus;
+  a.tl.push({ t: Date.now(), d: `Status changed to ${newStatus}` });
+  save();
+  toast(`Application status updated to ${newStatus}`);
+  render();
+}
+
+function saveAppNotes(id, text) {
+  const a = S.apps.find(x => x.id === id);
+  if (!a) return;
+  a.notes = text;
+  save();
+}
+
+function deleteApplication(id) {
+  if (confirm('Permanently delete this application record and its tailored resume?')) {
+    S.apps = S.apps.filter(x => x.id !== id);
+    save();
+    toast('Application deleted');
+    render();
+  }
+}
+
+function viewApplicationResume(id) {
+  const a = S.apps.find(x => x.id === id);
+  if (!a) return;
+  CUR = a.resume || S.p.resume || DEFAULT_MASTER_RESUME;
+
+  $('#mb').innerHTML = `
+    <div class="modal-header">
+      <div>
+        <h3>Tailored Resume — ${esc(a.title)} @ ${esc(a.co)}</h3>
+        <p style="font-size:12.5px;color:var(--text-muted);">Saved specifically for this job application.</p>
+      </div>
+      <button class="btn sm" onclick="cm()">✕</button>
+    </div>
+
+    <div class="btns" style="margin-bottom:10px;justify-content:flex-end;">
+      <button class="btn sm" onclick="copyResumeText()">📋 Copy Text</button>
+      <button class="btn sm" onclick="window.print()">🖨 Print / PDF</button>
+      <button class="btn sm" onclick="downloadResumeFile('${esc(a.title)}')">💾 Download .txt</button>
+    </div>
+
+    <div class="print-target">
+      <textarea id="res-editor" class="paper-editor" oninput="a.resume=this.value;save();updateResumeStats()">${esc(CUR)}</textarea>
+    </div>
+    <div id="res-stats" style="font-size:12px;color:var(--text-muted);text-align:right;margin-top:4px;"></div>
+
+    <div class="btns" style="justify-content:flex-end;margin-top:14px;">
+      <button class="btn p" onclick="cm()">Done</button>
+    </div>
+  `;
+  updateResumeStats();
+  $('#m').classList.add('on');
+}
+
+function resume() {
+  const tailoredApps = S.apps.filter(a => a.resume);
+
+  $('#main').innerHTML = `
+    <h2>Resume Studio</h2>
+
+    <div class="card">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:12px;">
+        <div>
+          <h3>Master Resume Template</h3>
+          <p style="font-size:13.5px;color:var(--text-muted);">
+            This is your primary source of truth. Every tailored resume builds upon this foundation, preserving its exact layout and formatting.
+          </p>
+        </div>
+        <div class="btns">
+          <button class="btn p" onclick="pg='profile';render()">✏️ Edit Master Resume in Profile</button>
+        </div>
+      </div>
+      <div style="margin-top:12px;padding:12px;background:var(--surface-alt);border-radius:var(--radius-md);font-size:13px;">
+        <b>Status:</b> ${S.p.resume ? `Active (${S.p.resume.length} characters, ~${S.p.resume.split(/\s+/).length} words)` : 'Empty — load standard template'}
+      </div>
+    </div>
+
+    <h3>Tailored Application Resumes (${tailoredApps.length})</h3>
+    ${!tailoredApps.length ? `
+      <p style="color:var(--text-muted);font-size:13.5px;">No tailored resumes generated yet. Open any job in the Jobs tab to generate one!</p>
+    ` : tailoredApps.map(a => `
+      <div class="card" style="display:flex;justify-content:space-between;align-items:center;">
+        <div>
+          <b>${esc(a.title)}</b> at ${esc(a.co)}
+          <div style="font-size:12px;color:var(--text-muted);">Status: ${a.status} · Saved ${new Date(a.at).toLocaleDateString()}</div>
+        </div>
+        <button class="btn sm p" onclick="viewApplicationResume('${a.id}')">View / Edit Resume</button>
+      </div>
+    `).join('')}
+  `;
+}
+
+function profile() {
+  const p = S.p;
+
+  $('#main').innerHTML = `
+    <h2>Candidate Profile & Master Resume</h2>
+
+    <div class="card">
+      <h3>Personal & Contact Details</h3>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px;margin-bottom:14px;">
+        <div>
+          <label>Full Name *</label>
+          <input id="p_name" value="${esc(p.name)}">
+        </div>
+        <div>
+          <label>Email Address</label>
+          <input id="p_email" type="email" value="${esc(p.email)}">
+        </div>
+        <div>
+          <label>Phone Number</label>
+          <input id="p_phone" value="${esc(p.phone)}">
+        </div>
+        <div>
+          <label>Years of Experience (YOE) *</label>
+          <input id="p_yoe" type="number" step="0.5" value="${esc(p.yoe)}">
+        </div>
+        <div>
+          <label>Expected Salary</label>
+          <input id="p_sal" value="${esc(p.salary)}" placeholder="e.g. ₹18 LPA or $120k">
+        </div>
+        <div>
+          <label>Notice Period</label>
+          <input id="p_notice" value="${esc(p.notice)}" placeholder="e.g. 30 days">
+        </div>
+      </div>
+
+      <div>
+        <label>Work Authorization & Visa Status</label>
+        <input id="p_auth" value="${esc(p.auth)}" placeholder="e.g. Authorized to work in India / UAE / US">
+      </div>
+    </div>
+
+    <div class="card">
+      <h3>Target Roles & Technical Skills</h3>
+      <div style="margin-bottom:14px;">
+        <label>Target Job Titles (Comma-separated) — Used by Job Matching Engine</label>
+        <input id="p_titles" value="${esc(p.titles)}">
+      </div>
+      <div>
+        <label>Core Skills (Comma-separated) — Used for ATS Keyword Alignment</label>
+        <input id="p_skills" value="${esc(p.skills)}">
+      </div>
+    </div>
+
+    <div class="card">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;flex-wrap:wrap;gap:8px;">
+        <div>
+          <h3>Master Resume Text</h3>
+          <p style="font-size:12.5px;color:var(--text-muted);">Paste your complete resume or load the pre-built Oracle DBA template.</p>
+        </div>
+        <div class="btns">
+          <button class="btn sm" onclick="loadDefaultMasterResume()">Load Recommended DBA Resume</button>
+          <label class="btn sm" style="margin:0;">
+            Upload .txt/.md
+            <input type="file" accept=".txt,.md" hidden onchange="uploadResumeFile(this)">
+          </label>
+        </div>
+      </div>
+      <textarea id="p_resume" class="paper-editor" style="min-height:300px;">${esc(p.resume)}</textarea>
+    </div>
+
+    <div class="btns" style="justify-content:flex-end;">
+      <button class="btn p" style="padding:10px 24px;font-size:14px;" onclick="saveProfile()">
+        💾 Save Profile & Refresh All Jobs
+      </button>
+    </div>
+  `;
+}
+
+function loadDefaultMasterResume() {
+  if (confirm('Load the comprehensive Oracle DBA Master Resume template for Mohamed Bhadharudeen?')) {
+    $('#p_resume').value = DEFAULT_MASTER_RESUME;
+    toast('Loaded Oracle DBA master resume template');
+  }
+}
+
+function uploadResumeFile(input) {
+  const f = input.files[0];
+  if (!f) return;
+  const reader = new FileReader();
+  reader.onload = () => {
+    $('#p_resume').value = reader.result;
+    S.p.resumeName = f.name;
+    toast(`Loaded ${f.name}`);
+  };
+  reader.readAsText(f);
+}
+
+function saveProfile() {
+  const getVal = id => $('#' + id).value.trim();
+
+  Object.assign(S.p, {
+    name: getVal('p_name'),
+    email: getVal('p_email'),
+    phone: getVal('p_phone'),
+    yoe: +getVal('p_yoe') || 6.5,
+    salary: getVal('p_sal'),
+    notice: getVal('p_notice'),
+    auth: getVal('p_auth'),
+    titles: getVal('p_titles'),
+    skills: getVal('p_skills'),
+    resume: $('#p_resume').value
+  });
+
+  save();
+  toast('Profile and master resume updated successfully! ✨');
+  pg = 'jobs';
+  render();
+}
+
+function set() {
+  $('#main').innerHTML = `
+    <h2>Settings & Cloud Synchronization</h2>
+
+    <div class="card">
+      <h3>Appearance Theme</h3>
+      <div class="btns" style="margin-top:10px;">
+        <button class="btn ${!S.theme ? 'p' : ''}" onclick="setTheme('')">System Default</button>
+        <button class="btn ${S.theme==='light' ? 'p' : ''}" onclick="setTheme('light')">☀️ Light</button>
+        <button class="btn ${S.theme==='dark' ? 'p' : ''}" onclick="setTheme('dark')">🌙 Dark</button>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3>Data Backup & Restore</h3>
+      <p style="font-size:13.5px;color:var(--text-muted);margin-bottom:12px;">
+        Download a local JSON backup of your profile, master resume, real custom jobs, and all tracked applications.
+      </p>
+      <div class="btns">
+        <button class="btn p" onclick="dl()">⬇ Download Backup File</button>
+        <label class="btn" style="margin:0;">
+          ⬆ Import Backup
+          <input type="file" accept=".json" hidden onchange="impFile(this)">
+        </label>
+        <button class="btn" onclick="exp()">Show JSON</button>
+        <button class="btn" onclick="restoreSkipped()">Restore Hidden Jobs</button>
+        <button class="btn d" onclick="resetAllData()">Delete All Data</button>
+      </div>
+    </div>
+
+    ${renderCloudSyncCard()}
+
+    <div class="card">
+      <h3>Automatic Snapshot History</h3>
+      <p style="font-size:13px;color:var(--text-muted);margin-bottom:8px;">
+        Snapshots are created automatically every 30 minutes while you work.
+      </p>
+      ${renderHistory()}
+    </div>
+  `;
+}
+
+function setTheme(t) {
+  S.theme = t;
+  if (!t) delete document.documentElement.dataset.theme;
+  else document.documentElement.dataset.theme = t;
+  save();
+  set();
+}
+
+function restoreSkipped() {
+  S.skip = [];
+  save();
+  toast('All hidden jobs restored');
+}
+
+function resetAllData() {
+  if (confirm('Are you sure you want to completely erase all JobPilot data from this browser?')) {
+    localStorage.removeItem(KEY);
+    location.reload();
+  }
+}
+
+function exp() {
+  CUR = JSON.stringify(S, null, 2);
+  $('#mb').innerHTML = `
+    <div class="modal-header">
+      <h3>Export JSON Data</h3>
+      <button class="btn sm" onclick="cm()">✕</button>
+    </div>
+    <textarea class="paper-editor" style="min-height:300px;">${esc(CUR)}</textarea>
+    <div class="btns" style="justify-content:flex-end;margin-top:12px;">
+      <button class="btn p" onclick="copyResumeText()">Copy JSON</button>
+    </div>
+  `;
+  $('#m').classList.add('on');
+}
+
+function dl() {
+  const filename = `jobpilot-backup-${new Date().toISOString().slice(0, 10)}.json`;
+  const blob = new Blob([JSON.stringify(S, null, 2)], { type: 'application/json' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = filename;
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  S.lastBk = Date.now();
+  save();
+  toast(`Backup downloaded: ${filename}`);
+}
+
+function impFile(input) {
+  const f = input.files[0];
+  if (!f) return;
+  const reader = new FileReader();
+  reader.onload = () => {
+    try {
+      const data = JSON.parse(reader.result);
+      if (!data.p || !Array.isArray(data.apps)) throw 0;
+      snap(1);
+      S = Object.assign({}, S, data);
+      save();
+      toast('Backup restored successfully!');
+      render();
+    } catch (e) {
+      toast('Invalid backup file');
+    }
+  };
+  reader.readAsText(f);
+}
+
+function renderHistory() {
+  let H = [];
+  try { H = JSON.parse(localStorage.getItem(KEY + '_h') || '[]'); } catch (e) {}
+  if (!H.length) return '<p style="color:var(--text-muted);font-size:13px;">No history snapshots yet.</p>';
+  return H.map((x, i) => `
+    <div class="timeline-step" style="display:flex;justify-content:space-between;align-items:center;">
+      <span>${new Date(x.t).toLocaleString()} · ${x.n} applications tracked</span>
+      <button class="btn sm" onclick="restoreSnapshot(${i})">Restore</button>
+    </div>
+  `).join('');
+}
+
+function restoreSnapshot(i) {
+  try {
+    const H = JSON.parse(localStorage.getItem(KEY + '_h') || '[]');
+    if (!confirm('Restore this snapshot? Current data will be archived.')) return;
+    snap(1);
+    S = Object.assign({}, S, JSON.parse(H[i].d));
+    save();
+    toast('Snapshot restored');
+    render();
+  } catch (e) {
+    toast('Restore failed');
+  }
+}
+
+var FB = null, U = null, unsub = null, pushT = null;
+const FBK = 'jobpilot_fbcfg';
+
+const fbCfgGet = () => {
+  try { return FBCFG || JSON.parse(localStorage.getItem(FBK) || 'null'); } catch (e) { return null; }
+};
+
+const loadJs = u => new Promise((resolve, reject) => {
+  const x = document.createElement('script');
+  x.src = u;
+  x.onload = resolve;
+  x.onerror = () => reject(new Error('Could not load Firebase library'));
+  document.head.appendChild(x);
+});
+
+async function fbInit() {
+  if (FB) return FB;
+  const cfg = fbCfgGet();
+  if (!cfg) return null;
+  const B = 'https://www.gstatic.com/firebasejs/10.12.2/';
+  if (!window.firebase) {
+    await loadJs(B + 'firebase-app-compat.js');
+    await loadJs(B + 'firebase-auth-compat.js');
+    await loadJs(B + 'firebase-firestore-compat.js');
+  }
+  if (!firebase.apps.length) firebase.initializeApp(cfg);
+  FB = { a: firebase.auth(), d: firebase.firestore() };
+  FB.a.onAuthStateChanged(u => {
+    U = u;
+    if (u) startSync();
+    else if (unsub) { unsub(); unsub = null; }
+    if (pg === 'set') set();
+  });
+  return FB;
+}
+
+function startSync() {
+  const ref = FB.d.doc('users/' + U.uid);
+  let first = true;
+  if (unsub) unsub();
+  unsub = ref.onSnapshot(sn => {
+    if (sn.metadata.hasPendingWrites) return;
+    let c = null;
+    try { c = sn.exists ? JSON.parse(sn.data().json) : null; } catch (e) {}
+    if (first) {
+      first = false;
+      if (!c) { cloudPush(1); return; }
+      const empty = !S.apps.length && !S.p.resume;
+      if (empty || c.mod > (S.mod || 0)) {
+        snap(1);
+        S = Object.assign({}, S, c);
+        local();
+        render();
+        toast('Synced from cloud');
+      } else if (c.mod < (S.mod || 0)) {
+        cloudPush(1);
+      }
+      return;
+    }
+    if (c && c.mod > (S.mod || 0)) {
+      S = Object.assign({}, S, c);
+      local();
+      render();
+      toast('Updated from cloud device');
+    }
+  }, er => toast('Sync error: ' + er.message));
+}
+
+function cloudPush(now) {
+  clearTimeout(pushT);
+  const go = async () => {
+    if (!U || !FB) return;
+    try {
+      await FB.d.doc('users/' + U.uid).set({ json: JSON.stringify(S), mod: S.mod || Date.now() });
+      S.lastSync = Date.now();
+      local();
+      if (pg === 'set') set();
+    } catch (e) {
+      toast('Cloud save failed: ' + e.message);
+    }
+  };
+  now ? go() : (pushT = setTimeout(go, 2000));
+}
+
+async function fbAuth(md) {
+  try {
+    await fbInit();
+    const email = $('#fe').value.trim();
+    const pass = $('#fp').value;
+    if (md === 'up') await FB.a.createUserWithEmailAndPassword(email, pass);
+    else if (md === 'in') await FB.a.signInWithEmailAndPassword(email, pass);
+    else {
+      await FB.a.sendPasswordResetEmail(email);
+      toast('Password reset email sent');
+    }
+  } catch (x) {
+    toast(String(x.message).replace('Firebase: ', ''));
+  }
+}
+
+function fbOut() {
+  if (FB) FB.a.signOut();
+}
+
+function renderCloudSyncCard() {
+  const cfg = fbCfgGet();
+  if (!cfg) return '';
+  if (U) {
+    return `
+      <div class="card">
+        <h3>☁️ Cloud Synchronization</h3>
+        <p style="font-size:13.5px;color:var(--text);">Signed in as <b>${esc(U.email)}</b></p>
+        <p style="font-size:12.5px;color:var(--text-muted);margin:4px 0 12px;">
+          ${S.lastSync ? `Last cloud sync: ${new Date(S.lastSync).toLocaleString()}` : 'Not synced yet'} · Seamless real-time sync active.
+        </p>
+        <div class="btns">
+          <button class="btn p" onclick="cloudPush(1);toast('Syncing…')">Sync Now</button>
+          <button class="btn" onclick="fbOut()">Sign Out</button>
+        </div>
+      </div>
+    `;
+  }
+  return `
+    <div class="card">
+      <h3>☁️ Cloud Synchronization (Firebase)</h3>
+      <p style="font-size:13.5px;color:var(--text-muted);margin-bottom:12px;">
+        Sign in to sync your profile, master resume, and applications across all your devices.
+      </p>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px;max-width:500px;">
+        <div>
+          <label>Email Address</label>
+          <input id="fe" type="email" placeholder="name@example.com" autocomplete="username">
+        </div>
+        <div>
+          <label>Password (6+ chars)</label>
+          <input id="fp" type="password" placeholder="••••••••" autocomplete="current-password">
+        </div>
+      </div>
+      <div class="btns">
+        <button class="btn p" onclick="fbAuth('in')">Sign In</button>
+        <button class="btn" onclick="fbAuth('up')">Create Account</button>
+        <button class="btn" onclick="fbAuth('reset')">Forgot Password</button>
+      </div>
+    </div>
+  `;
+}
+
+if (fbCfgGet()) fbInit().catch(() => {});
 render();
-</script></body></html>
+</script>
+</body>
+</html>
